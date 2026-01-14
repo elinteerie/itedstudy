@@ -15,6 +15,7 @@ export default function SignUpScreen() {
 
     const handleSignUp = () => {
         console.log('Sign Up:', { fullName, email, institution, level, department, password });
+        router.push('/auth/verification');
     };
 
     return (
