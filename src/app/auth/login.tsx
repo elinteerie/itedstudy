@@ -8,6 +8,7 @@ export default function LoginScreen() {
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
+        router.push('/(tabs)/home');
         console.log('Login:', email, password);
     };
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -49,7 +49,8 @@ export default function VerificationScreen() {
       <Text style={styles.title}>Verification</Text>
 
       <View style={styles.iconContainer}>
-        <Ionicons name="phone-portrait-outline" size={80} color="#5B67CA" />
+       
+        <Image source={require('../../assets/image/One_Time_Password.png')} style={styles.image} />
       </View>
 
       <Text style={styles.subtitle}>
@@ -87,6 +88,10 @@ export default function VerificationScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
+            <View style={{justifyContent: 'center', alignItems: 'center',}}>
+              <View style={{ alignItems: 'center', borderRadius: 20, height: 10, width: '50%', backgroundColor: 'white', marginBottom: 50 }} />
+            </View>
+            
             <Text style={styles.modalTitle}>Verified!</Text>
             <Text style={styles.modalText}>
               Your email address has been verified. You can now login and enjoy your amazing courses
@@ -111,6 +116,7 @@ const styles = StyleSheet.create({
   backButton: {
     marginBottom: 20,
   },
+  image: { width: 80, height: 80, marginTop: 20 },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -146,7 +152,7 @@ const styles = StyleSheet.create({
   },
   resendButton: {
     alignSelf: 'center',
-    marginBottom: 250,
+    marginBottom: 180
   },
   resendText: {
     color: '#666',
@@ -173,6 +179,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     padding: 30,
+    paddingTop: 2,
     paddingBottom: 50,
   },
   modalTitle: {

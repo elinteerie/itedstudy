@@ -9,7 +9,7 @@ export default function SchoolScreen() {
   const [school, setSchool] = useState('');
 
   const handleNext = () => {
-    router.push('/auth/login');
+    router.push('/auth/editProfile');
   };
 
   return (
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingTop: 50,
   },
   backButton: {
