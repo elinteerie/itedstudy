@@ -10,7 +10,10 @@ export default function CalculatorScreen() {
 
   const handleCalculate = () => {
     // Calculate CGPA logic here
+
     console.log('Calculate CGPA');
+    router.push('/(tabs)/cgpa/calculator');
+    
   };
 
   return (
@@ -74,21 +77,6 @@ export default function CalculatorScreen() {
           <Text style={styles.calculateText}>Calculate</Text>
         </TouchableOpacity>
       </ScrollView>
-
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/home')}>
-          <Ionicons name="home" size={24} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="apps" size={24} color="#666" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="bar-chart" size={24} color="#666" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Ionicons name="person" size={24} color="#666" />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -161,20 +149,20 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   badge: {
-    backgroundColor: '#fff',
+    backgroundColor: '#00052D',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   badgeActive: {
-    backgroundColor: '#B71C1C',
+    backgroundColor: '#fff',
   },
   badgeText: {
     fontSize: 12,
-    color: '#000',
+    color: '#fff',
   },
   badgeTextActive: {
-    color: '#fff',
+    color: '#000',
   },
   quoteContainer: {
     backgroundColor: '#f5f5f5',

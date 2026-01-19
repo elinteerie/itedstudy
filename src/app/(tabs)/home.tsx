@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import ProfileIcon from "../../assets/image/Male_User.png"
+import Telegram from "../../assets/image/Telegram.png"
+import Facebook from "../../assets/image/Facebook.png"
+import Instagram from "../../assets/image/Instagram.png"
+import Tiktok from "../../assets/image/TikTok.png"
+import UNIAI from "../../assets/image/Uni_AI.png"
+import CGPACalculator from "../../assets/image/Gpa_Calculator.png"
+import PastQuestion from "../../assets/image/Quiz.png"
+import LectureNotes from "../../assets/image/Copybook.png"
+import Updates from "../../assets/image/Updates.png"
+import UniversityCampus from "../../assets/image/University.png"
+// import ProfileIcon from '../../assets/svg';
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -11,29 +23,29 @@ export default function HomeScreen() {
     {
       title: 'Lecture Notes',
       subtitle: 'Get full access to your course outlines and read available topics',
-      icon: 'book-outline',
-      color: '#4A148C',
+      image: LectureNotes,
+      color: '#0F065E',
       route: '/notes'
     },
     {
       title: 'Past Question',
       subtitle: 'Get past questions, practice and ace your exams',
-      icon: 'document-text-outline',
-      color: '#1A237E',
+      image: PastQuestion,
+      color: '#0F065E',
       route: '/questions'
     },
     {
       title: 'C.G.P.A Calculator',
       subtitle: 'Calculate you semester GPA and cumulative GPA',
-      icon: 'calculator-outline',
-      color: '#0D47A1',
+      image: CGPACalculator,
+      color: '#0F065E',
       route: '/cgpa/calculator'
     },
     {
       title: 'Uni Ai',
       subtitle: 'Your university Ai assistant',
-      icon: 'sparkles-outline',
-      color: '#B71C1C',
+      image: UNIAI,
+      color: '#F70000',
       route: '/ai'
     },
   ];
@@ -42,44 +54,40 @@ export default function HomeScreen() {
     {
       title: 'Flash Cards',
       subtitle: 'Who is the software developer in the world currently',
-      tags: ['AI', 'Recommendation on E-Marketing'],
-      color: '#E3F2FD'
+      tags: [{ 'A)': 'Ogbonnaya Daniel Kalu - known as (Tech Daniel)' },
+      { 'B)': 'Osunde Micheal known as (MichealKing)' }
+      ],
+
+      color: '#ffffff'
     },
-    {
-      title: 'App Update Available',
-      subtitle: 'Check out the latest features and update availability',
-      icon: 'notifications-outline',
-      color: '#FFEBEE'
-    },
-    {
-      title: 'Student Of the Semester',
-      subtitle: 'Celebrating outstanding students of this semester',
-      icon: 'trophy-outline',
-      color: '#FFF3E0'
-    },
-    {
-      title: 'Task/Refund',
-      subtitle: 'Follow us on our platform',
-      icons: ['logo-facebook', 'logo-twitter', 'logo-youtube'],
-      color: '#E8F5E9'
-    },
+
   ];
 
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      
+
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <Text style={styles.greeting}>Ugwuanyanwu Emmanuel</Text>
+          <View>
+            <Text style={styles.greeting}>Ugwuanyanwu Emmanuel</Text>
+            <View style={{ flexDirection: "row", gap: 5, justifyContent: "flex-end", alignItems: "center" }}>
+              <View style={styles.smallCircle} />
+
+              <Text style={{ fontSize: 10, color: "white" }}>Active</Text>
+            </View>
+          </View>
+
           <View style={styles.headerIcons}>
-            <Ionicons name="notifications-outline" size={24} color="#fff" />
+
+            {/* <ProfileIcon /> */}
+            <Image source={ProfileIcon} />
             <Ionicons name="ellipsis-vertical" size={24} color="#fff" />
           </View>
         </View>
         <Text style={styles.title}>Uni E-Study</Text>
         <Text style={styles.subtitle}>Best pathway to academic excellence</Text>
-        
+
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
           <TextInput
@@ -97,28 +105,29 @@ export default function HomeScreen() {
           <View key={index} style={[styles.card, { backgroundColor: card.color }]}>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>{card.title}</Text>
-              <Text style={styles.seeMore}>See more</Text>
+              <Text style={styles.seeMore}>See more ></Text>
             </View>
             <Text style={styles.cardSubtitle}>{card.subtitle}</Text>
             {card.tags && (
               <View style={styles.tags}>
-                {card.tags.map((tag, i) => (
-                  <View key={i} style={styles.tag}>
-                    <Text style={styles.tagText}>{tag}</Text>
+                {card.tags && (
+                  <View style={styles.tags}>
+                    {card.tags.map((tag, i) => {
+                      const key = Object.keys(tag)[0];
+                      const value = Object.values(tag)[0];
+                      return (
+                        <View key={i} style={styles.tag}>
+                          <Text style={styles.tagText}>{key}</Text>
+                          <Text style={styles.tagText}>{value}</Text>
+                        </View>
+                      );
+                    })}
                   </View>
-                ))}
+                )}
+                <Text style={styles.flashCardFooter}>Introduction to software development SOE 202</Text>
               </View>
             )}
-            {card.icon && (
-              <Ionicons name={card.icon as any} size={40} color="#666" style={styles.cardIcon} />
-            )}
-            {card.icons && (
-              <View style={styles.socialIcons}>
-                {card.icons.map((icon, i) => (
-                  <Ionicons key={i} name={icon as any} size={24} color="#666" />
-                ))}
-              </View>
-            )}
+
           </View>
         ))}
 
@@ -129,13 +138,77 @@ export default function HomeScreen() {
               style={[styles.menuItem, { backgroundColor: item.color }]}
               onPress={() => router.push(item.route as any)}
             >
-              <View style={styles.menuIconContainer}>
-                <Ionicons name={item.icon as any} size={30} color="#fff" />
+              <View style={{ width: "70%" }}>
+                <Text style={styles.menuTitle}>{item.title}</Text>
+                <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
               </View>
-              <Text style={styles.menuTitle}>{item.title}</Text>
-              <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+              <View style={styles.menuIconContainer}>
+                <Image source={item.image} style={{ width: 50, height: 50 }} />
+              </View>
             </TouchableOpacity>
           ))}
+        </View>
+
+        <View style={styles.fifthContainer}>
+          <TouchableOpacity style={styles.fourthContainer}>
+            <View style={{ width: "80%" }}>
+              <Text style={styles.seventhText}>App Update Available </Text>
+              <Text style={styles.eighthText}>
+                Ited Jambee latest software version available .{" "}
+              </Text>
+            </View>
+            <View style={styles.smallContainer}>
+              <Image source={Updates} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fourthContainer}
+            onPress={() => {
+              router.push("/cutoff");
+            }}
+          >
+            <View style={{ width: "80%" }}>
+              <Text style={styles.seventhText}>
+                Student Of the Semester{" "}
+              </Text>
+              <Text style={styles.eighthText}>
+                Get updates on our program “Student of the semester"{" "}
+              </Text>
+            </View>
+            <View style={styles.smallContainer}>
+              <Image source={UniversityCampus} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.fourthContainer}
+            onPress={() => {
+              router.push("/socials");
+            }}
+          >
+            <View style={{ width: "50%" }}>
+              <Text style={styles.seventhText}>Task/Refund</Text>
+              <Text style={styles.eighthText}>
+                Follow on our social media platforms{" "}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: "50%",
+                gap: 10,
+                justifyContent: "flex-end",
+                alignItems: "flex-start",
+                flexDirection: "row",
+              }}
+            >
+
+              <Image source={Instagram} />
+              <Image source={Telegram} />
+              <Image source={Facebook} />
+              <Image source={Tiktok} />
+
+            </View>
+          </TouchableOpacity>
+
         </View>
       </ScrollView>
     </View>
@@ -156,9 +229,16 @@ const styles = StyleSheet.create({
   },
   headerTop: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    gap: 10,
     marginBottom: 20,
+  },
+  smallCircle: {
+    height: 5,
+    width: 5,
+    borderRadius: 5,
+    backgroundColor: "#4DFF04"
   },
   greeting: {
     color: '#fff',
@@ -166,7 +246,7 @@ const styles = StyleSheet.create({
   },
   headerIcons: {
     flexDirection: 'row',
-    gap: 15,
+    gap: 2,
   },
   title: {
     color: '#fff',
@@ -212,25 +292,27 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: "#0F065E"
   },
   seeMore: {
     fontSize: 12,
-    color: '#666',
+    color: '#0F065E',
   },
   cardSubtitle: {
     fontSize: 12,
-    color: '#666',
+    color: '#0F065E',
     marginBottom: 10,
   },
   tags: {
-    flexDirection: 'row',
     gap: 5,
   },
   tag: {
-    backgroundColor: '#fff',
+    backgroundColor: '#D9D9D9',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 15,
+    flexDirection: "row",
+    gap: 5
   },
   tagText: {
     fontSize: 10,
@@ -248,10 +330,15 @@ const styles = StyleSheet.create({
   menuGrid: {
     gap: 15,
     paddingBottom: 20,
+    marginBottom: 20
   },
   menuItem: {
     borderRadius: 15,
     padding: 20,
+    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   menuIconContainer: {
     marginBottom: 10,
@@ -267,4 +354,87 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.9,
   },
+
+
+  card: {
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  menuItem: {
+    borderRadius: 15,
+    padding: 20,
+    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  flashCardFooter: {
+    fontSize: 10,
+    color: '#0F065E',
+    marginTop: 10,
+    textAlign: 'right',
+  },
+
+
+  smallContainer: {
+    width: "20%", justifyContent: "flex-end", flexDirection: "row"
+  },
+
+  fifthContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 20,
+    shadowOffset: {
+      height: 20,
+      width: 20,
+    },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+    shadowColor: "#333333",
+    marginBottom: 50,
+    borderWidth: 1,
+    borderColor: "#00052D"
+  },
+
+fourthContainer: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: 10,
+  borderRadius: 10,
+  marginTop: 10,
+  backgroundColor: '#FFFFFF',
+  elevation: 3,
+  shadowColor: '#000',
+  shadowOffset: {
+    height: 2,
+    width: 0,
+  },
+  shadowOpacity: 0.15,
+  shadowRadius: 3,
+},
+  seventhText: {
+    fontSize: 15,
+    color: "#0F065E",
+    textDecorationLine: "underline",
+    fontWeight: "800",
+  },
+  eighthText: {
+    fontSize: 10,
+    color: "#0F065E",
+    fontWeight: "600",
+  },
+
 });
