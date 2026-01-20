@@ -30,6 +30,17 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+          <Tabs.Screen
+        name="courses"
+        options={{
+          title: 'Courses',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bar-chart" size={size} color={color} />
+          ),
+        }}
+      />
+      
       <Tabs.Screen
         name="cgpa"
         options={{
@@ -39,15 +50,7 @@ export default function TabsLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="courses"
-        options={{
-          title: 'Courses',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bar-chart" size={size} color={color} />
-          ),
-        }}
-      />
+  
       <Tabs.Screen
         name="profile"
         options={{

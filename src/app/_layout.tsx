@@ -9,6 +9,9 @@ export default function RootLayout() {
     >
       <Stack.Screen name="index" />
       <Stack.Screen name="auth" />
+      <Stack.Screen name="availableCourses" />
+      <Stack.Screen name="exam" />
+      <Stack.Screen name="examResult" />
       <Stack.Screen name="(tabs)" />
     </Stack>
   );

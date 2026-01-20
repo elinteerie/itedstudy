@@ -25,28 +25,28 @@ export default function HomeScreen() {
       subtitle: 'Get full access to your course outlines and read available topics',
       image: LectureNotes,
       color: '#0F065E',
-      route: '/notes'
+      route: '/(tabs)/courses/index'
     },
     {
       title: 'Past Question',
       subtitle: 'Get past questions, practice and ace your exams',
       image: PastQuestion,
       color: '#0F065E',
-      route: '/questions'
+      route: '/availableCourses'
     },
     {
       title: 'C.G.P.A Calculator',
       subtitle: 'Calculate you semester GPA and cumulative GPA',
       image: CGPACalculator,
       color: '#0F065E',
-      route: '/cgpa/calculator'
+      route: '/(tabs)/cgpa/index'
     },
     {
       title: 'Uni Ai',
       subtitle: 'Your university Ai assistant',
       image: UNIAI,
       color: '#F70000',
-      route: '/ai'
+      route: '/(tabs)/home'
     },
   ];
 
@@ -164,7 +164,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.fourthContainer}
             onPress={() => {
-              router.push("/cutoff");
+              router.push("/(tabs)/home");
             }}
           >
             <View style={{ width: "80%" }}>
@@ -182,7 +182,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={styles.fourthContainer}
             onPress={() => {
-              router.push("/socials");
+              router.push("/(tabs)/home");
             }}
           >
             <View style={{ width: "50%" }}>
