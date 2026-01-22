@@ -9,6 +9,9 @@ interface User {
   full_name: string;
   phone_number: string;
   activated: boolean;
+  level: string;
+  department: string;
+  university_id: number;
 }
 
 interface UserState {
@@ -21,6 +24,9 @@ const initialState: UserState = {
   user: {
     id: "",
     email: "",
+    level: "",
+    department: "",
+    university_id: 0,
     password: "",
     full_name: "",
     phone_number: "",

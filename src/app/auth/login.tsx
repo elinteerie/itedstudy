@@ -2,14 +2,46 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
+import { useLoginMutation } from "../../components/services/userService";
+import { useAppDispatch } from "../../components/redux/store";
+import { loginUser, updateExpires } from "../../components/redux/slices/authSlice";
+import Toast from "react-native-toast-message";
+import { LoginRequestBody } from '../../components/services/userService';
 
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        router.push('/(tabs)/home');
-        console.log('Login:', email, password);
+    const dispatch = useAppDispatch();
+    const [login, { isLoading }] = useLoginMutation();
+
+    // const handleLogin = () => {
+    //     router.push('/(tabs)/home');
+    //     console.log('Login:', email, password);
+    // };
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Toast.show({ type: "error", text1: "Fill in all fields" });
+            return;
+        }
+
+        try {
+            const payload: LoginRequestBody = { email, password };
+
+            const res = await login(payload).unwrap();
+
+            dispatch(loginUser(res.access_token));
+            dispatch(updateExpires(res.expires));
+
+            Toast.show({ type: "success", text1: "Logged in successfully" });
+            router.push("/(tabs)/home");
+        } catch (err: any) {
+            Toast.show({
+                type: "error",
+                text1: "Login failed",
+                text2: err?.data?.message || "Invalid credentials",
+            });
+        }
     };
 
     return (
@@ -43,8 +75,17 @@ export default function LoginScreen() {
                     <Text style={styles.forgotPassword}>Forgotten Password?</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                {/* <TouchableOpacity style={styles.button} onPress={handleLogin}>
                     <Text style={styles.buttonText}>Log In</Text>
+                </TouchableOpacity> */}
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleLogin}
+                    disabled={isLoading}
+                >
+                    <Text style={styles.buttonText}>
+                        {isLoading ? "Logging in..." : "Log In"}
+                    </Text>
                 </TouchableOpacity>
 
                 <View style={styles.footer}>

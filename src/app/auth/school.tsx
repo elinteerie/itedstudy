@@ -9,7 +9,7 @@ export default function SchoolScreen() {
   const [school, setSchool] = useState('');
 
   const handleNext = () => {
-    router.push('/auth/editProfile');
+    router.push('/(tabs)/profile/editProfile');
   };
 
   return (

@@ -10,6 +10,7 @@ export default function ChangePasswordScreen() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleUpdate = () => {
+    router.push('/auth/login');
     console.log('Update password');
   };
 

@@ -7,11 +7,7 @@ interface University {
   id: number;
 }
 
-interface ListUniResponse {
-  universities: University[];
-}
-
-interface CreateUserRequestBody {
+export interface CreateUserRequestBody {
   full_name: string;
   email: string;
   university_id: number;
@@ -20,14 +16,14 @@ interface CreateUserRequestBody {
   password: string;
 }
 
-interface CreateUserResponse {
+export interface CreateUserResponse {
   message: string;
   access_token: string;
   token_type: string;
   token_expires: string;
 }
 
-interface LoginRequestBody {
+export interface LoginRequestBody {
   email: string;
   password: string;
   scope?: string;
@@ -71,11 +67,11 @@ interface VerifyEmailResponse {
   message: string;
 }
 
-interface UpdateUserInfoRequestBody {
+export interface UpdateUserInfoRequestBody {
   full_name?: string;
   university_id?: number;
   level?: string;
-  department?: string;
+  deparment?: string;
 }
 
 interface UpdateUserInfoResponse {
@@ -137,13 +133,20 @@ export const userApi = createApi({
     baseUrl: BaseUrl,
   }),
   endpoints: (builder) => ({
+    // listUniversities: builder.query<University[], void>({
+    //   query: () => ({
+    //     url: "auth/list-uni",
+    //     method: "POST",
+    //   }),
+    //   transformResponse: (response: ListUniResponse) =>
+    //     response.universities || [],
+    // }),
+
     listUniversities: builder.query<University[], void>({
       query: () => ({
-        url: "auth/list-uni",
+        url: `auth/list-uni`,
         method: "POST",
       }),
-      transformResponse: (response: ListUniResponse) =>
-        response.universities || [],
     }),
 
     createUser: builder.mutation<CreateUserResponse, CreateUserRequestBody>({

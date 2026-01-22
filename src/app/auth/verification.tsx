@@ -3,11 +3,60 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Image } fro
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useVerifyEmailMutation, useResendOtpMutation } from "../../components/services/userService";
+import Toast from "react-native-toast-message";
+import { useLocalSearchParams } from "expo-router";
 
 export default function VerificationScreen() {
-  const [code, setCode] = useState(['', '', '', '', '']);
+  const [code, setCode] = useState(['', '', '', '', '', '']);
   const [showModal, setShowModal] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+
+  const { email } = useLocalSearchParams<{ email: string }>();
+
+  const [verifyEmail, { isLoading: verifying }] = useVerifyEmailMutation();
+  const [resendOtp, { isLoading: resending }] = useResendOtpMutation();
+
+
+  const handleSubmit = async () => {
+    const otp = code.join("").trim();
+    if (otp.length !== 6) {
+      Toast.show({ type: "error", text1: "Enter complete code" });
+      return;
+    }
+
+    if (!email) {
+      Toast.show({ type: "error", text1: "Email missing. Try signup again." });
+      return;
+    }
+
+    try {
+      const res = await verifyEmail({ email, otp }).unwrap();
+      Toast.show({ type: "success", text1: res.message || "Email verified!" });
+      setShowModal(true);
+    } catch (err: any) {
+      Toast.show({
+        type: "error",
+        text1: "Verification failed",
+        text2: err?.data?.message || "Invalid code",
+      });
+    }
+  };
+
+  const handleResend = async () => {
+    if (!email) return;
+
+    try {
+      await resendOtp({ email }).unwrap();
+      Toast.show({ type: "success", text1: "New code sent!" });
+    } catch (err: any) {
+      Toast.show({
+        type: "error",
+        text1: "Resend failed",
+        text2: err?.data?.message || "Try again later",
+      });
+    }
+  };
 
   const handleCodeChange = (text: string, index: number) => {
     const newCode = [...code];
@@ -25,23 +74,23 @@ export default function VerificationScreen() {
     }
   };
 
-  const handleSubmit = () => {
-    setShowModal(true);
-  };
+  // const handleSubmit = () => {
+  //   setShowModal(true);
+  // };
 
-  const handleResend = () => {
-    console.log('Resend code');
-  };
+  // const handleResend = () => {
+  //   console.log('Resend code');
+  // };
 
   const handleContinue = () => {
     setShowModal(false);
-    router.push('/auth/country'); 
+    router.push('/(tabs)/profile/editProfile');
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      
+
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
@@ -49,7 +98,7 @@ export default function VerificationScreen() {
       <Text style={styles.title}>Verification</Text>
 
       <View style={styles.iconContainer}>
-       
+
         <Image source={require('../../assets/image/One_Time_Password.png')} style={styles.image} />
       </View>
 
@@ -72,14 +121,21 @@ export default function VerificationScreen() {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.resendButton} onPress={handleResend}>
-        <Text style={styles.resendText}>Resend</Text>
+      <TouchableOpacity
+        style={styles.resendButton}
+        onPress={handleResend}
+        disabled={resending || !email}
+      >
+        <Text style={styles.resendText}>{resending ? "Sending..." : "Resend"}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>Submit</Text>
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={handleSubmit}
+        disabled={verifying || !email}
+      >
+        <Text style={styles.submitText}>{verifying ? "Verifying..." : "Submit"}</Text>
       </TouchableOpacity>
-
       <Modal
         visible={showModal}
         transparent
@@ -88,10 +144,10 @@ export default function VerificationScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={{justifyContent: 'center', alignItems: 'center',}}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', }}>
               <View style={{ alignItems: 'center', borderRadius: 20, height: 10, width: '50%', backgroundColor: 'white', marginBottom: 50 }} />
             </View>
-            
+
             <Text style={styles.modalTitle}>Verified!</Text>
             <Text style={styles.modalText}>
               Your email address has been verified. You can now login and enjoy your amazing courses

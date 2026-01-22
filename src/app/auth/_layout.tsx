@@ -9,6 +9,9 @@ export default function AuthLayout() {
     >
       <Stack.Screen name="login" />
       <Stack.Screen name="signup" />
+      <Stack.Screen name="school" />
+      <Stack.Screen name="country" />
+      <Stack.Screen name="verification" />
     </Stack>
   );
 }

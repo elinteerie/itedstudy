@@ -4,6 +4,11 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Modal } from 'react-native';
+import { useUpdateUserInfoMutation } from "../../../components/services/userService";
+import { useAppSelector, useAppDispatch } from "../../../components/redux/store";
+import Toast from "react-native-toast-message";
+import { setUserInfo } from '../../../components/redux/slices/userSlice';
+import { UpdateUserInfoRequestBody } from '../../../components/services/userService';
 
 export default function EditProfileScreen() {
   const [fullName, setFullName] = useState('');
@@ -12,11 +17,51 @@ export default function EditProfileScreen() {
   const [level, setLevel] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  const token = useAppSelector((state) => state.auth.token);
+  const dispatch = useAppDispatch();
+  const [updateUserInfo, { isLoading: updating }] = useUpdateUserInfoMutation();
+  console.log("Token in EditProfileScreen:", token);
 
+  // const handleUpdate = () => {
+  //   setShowModal(true);
+  //   console.log('Update Profile:', { fullName, email, department, level });
+  // };
 
-  const handleUpdate = () => {
-    setShowModal(true);
-    console.log('Update Profile:', { fullName, email, department, level });
+  const handleUpdate = async () => {
+    if (!token) {
+      Toast.show({ type: "error", text1: "Not authenticated" });
+      return;
+    }
+    console.log("Updating profile with:", { fullName, email, department, level });
+    try {
+      const payload: UpdateUserInfoRequestBody = {};
+
+      if (fullName) payload.full_name = fullName;
+      if (level) payload.level = level;
+      if (department) payload.deparment = department;
+      payload.university_id = Number(4);
+      console.log(2)
+      console.log("Payload for update:", payload);
+      const res = await updateUserInfo({ token, body: payload }).unwrap();
+      console.log("Update response:", res);
+
+      // Optional: refresh user info or just update local state
+      dispatch(setUserInfo({
+        full_name: fullName,
+        level,
+        department,
+        // university_id if you allow changing it
+      }));
+
+      setShowModal(true);
+    } catch (err: any) {
+      console.log("Update error:", err);
+      Toast.show({
+        type: "error",
+        text1: "Update failed",
+        text2: err?.data?.message || "Please try again",
+      });
+    }
   };
 
   const handleContinue = () => {
@@ -71,12 +116,18 @@ export default function EditProfileScreen() {
             onChangeText={setLevel}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleUpdate}
+            disabled={updating || !token}
+          >
             <View style={styles.buttonContent}>
               <View style={styles.checkCircle}>
                 <Text style={styles.checkMark}>✓</Text>
               </View>
-              <Text style={styles.buttonText}>Update Profile</Text>
+              <Text style={styles.buttonText}>
+                {updating ? "Updating..." : "Update Profile"}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
