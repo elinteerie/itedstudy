@@ -25,7 +25,7 @@ export default function HomeScreen() {
       subtitle: 'Get full access to your course outlines and read available topics',
       image: LectureNotes,
       color: '#0F065E',
-      route: '/(tabs)/courses/index'
+      route: '/(tabs)/courses'
     },
     {
       title: 'Past Question',
@@ -39,14 +39,14 @@ export default function HomeScreen() {
       subtitle: 'Calculate you semester GPA and cumulative GPA',
       image: CGPACalculator,
       color: '#0F065E',
-      route: '/(tabs)/cgpa/index'
+      route: '/(tabs)/cgpa'
     },
     {
       title: 'Uni Ai',
       subtitle: 'Your university Ai assistant',
       image: UNIAI,
       color: '#F70000',
-      route: '/(tabs)/home'
+      route: '/aiDocumentAnalyzer'
     },
   ];
 
@@ -81,7 +81,7 @@ export default function HomeScreen() {
           <View style={styles.headerIcons}>
 
             {/* <ProfileIcon /> */}
-            <Image source={ProfileIcon} />
+            <TouchableOpacity onPress={() => router.push('/(tabs)/profile/settings')}><Image source={ProfileIcon} /></TouchableOpacity>
             <Ionicons name="ellipsis-vertical" size={24} color="#fff" />
           </View>
         </View>

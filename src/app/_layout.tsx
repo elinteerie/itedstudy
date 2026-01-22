@@ -12,6 +12,7 @@ export default function RootLayout() {
       <Stack.Screen name="availableCourses" />
       <Stack.Screen name="exam" />
       <Stack.Screen name="examResult" />
+      <Stack.Screen name="aiDocumentAnalyzer" />
       <Stack.Screen name="(tabs)" />
     </Stack>
   );
