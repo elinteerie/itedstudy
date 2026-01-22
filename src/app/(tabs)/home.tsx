@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image 
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import ProfileIcon from "../../assets/image/Male_User.png"
+import ProfileIcon2 from "../../assets/image/Male_User.png"
 import Telegram from "../../assets/image/Telegram.png"
 import Facebook from "../../assets/image/Facebook.png"
 import Instagram from "../../assets/image/Instagram.png"
@@ -14,7 +14,7 @@ import PastQuestion from "../../assets/image/Quiz.png"
 import LectureNotes from "../../assets/image/Copybook.png"
 import Updates from "../../assets/image/Updates.png"
 import UniversityCampus from "../../assets/image/University.png"
-// import ProfileIcon from '../../assets/svg';
+import {ProfileIcon} from '../../assets/svg';
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,7 +81,10 @@ export default function HomeScreen() {
           <View style={styles.headerIcons}>
 
             {/* <ProfileIcon /> */}
-            <TouchableOpacity onPress={() => router.push('/(tabs)/profile/settings')}><Image source={ProfileIcon} /></TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/profile/settings')}>
+              <ProfileIcon />
+              {/* <Image source={ProfileIcon2} /> */}
+              </TouchableOpacity>
             <Ionicons name="ellipsis-vertical" size={24} color="#fff" />
           </View>
         </View>
