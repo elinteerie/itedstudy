@@ -116,6 +116,9 @@ interface SummarisePdfResponse {
 interface PastQuestion {
   id: number;
   question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
   // other fields
 }
 

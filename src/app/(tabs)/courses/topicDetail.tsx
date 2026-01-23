@@ -1,10 +1,14 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useGetTopicContentQuery } from '../../../components/services/userService';
+import { useAppSelector } from '../../../components/redux/store';
 
 const TopicDetail = () => {
-  const { topicName, courseName } = useLocalSearchParams();
+  const { topicName, topicId, courseName } = useLocalSearchParams();
+  const token = useAppSelector((state) => state.auth.token);
+  const { data: topicContent, isLoading, error } = useGetTopicContentQuery({ token: token || '', topic_id: Number(topicId) });
 
   return (
     <View style={styles.container}>
@@ -12,91 +16,49 @@ const TopicDetail = () => {
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{topicName || 'Scalars'}</Text>
+        <Text style={styles.headerTitle}>{topicName || 'Topic'}</Text>
+        <TouchableOpacity
+          style={styles.pastQBtn}
+          onPress={() => router.push({
+            pathname: '/(tabs)/courses/pastQuestions',
+            params: { topicId, topicName, courseName, fromTopic: 'true' }
+          })}
+        >
+          <Text style={styles.pastQText}>Past Questions</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
-          <Text style={styles.sectionTitle}>Scalars: A Detailed Overview</Text>
-          
-          <Text style={styles.heading}>Definition</Text>
-          <Text style={styles.text}>
-            A scalar is a quantity that is fully characterized by its magnitude alone. A scalar is always accompanied by a unit of measure, and it does not have direction component. Scalars are fundamental in various disciplines, including physics, mathematics, engineering, and computer science.
-          </Text>
-
-          <Text style={styles.heading}>Characteristics of Scalars</Text>
-          <Text style={styles.text}>
-            1. <Text style={styles.bold}>Magnitude Only:</Text> Scalars are defined solely by their magnitude. Unlike vectors, scalars do not possess direction.
-          </Text>
-          <Text style={styles.text}>
-            2. <Text style={styles.bold}>Arithmetic Operations:</Text> Scalars can be added or subtracted by simple arithmetic operations. For example, adding two temperatures (20°C + 30°C = 50°C) or two masses (5 kg + 10 kg = 15 kg).
-          </Text>
-          <Text style={styles.text}>
-            3. <Text style={styles.bold}>Multiplication and Division:</Text> Scalars can be multiplied or divided, yielding another scalar quantity. For instance, dividing distance by time gives speed, a scalar quantity.
-          </Text>
-          <Text style={styles.text}>
-            4. <Text style={styles.bold}>Invariance under Coordinate System Changes:</Text> The value of a scalar remains unchanged irrespective of the coordinate system used, as they do not have direction.
-          </Text>
-
-          <Text style={styles.heading}>Examples of Scalar Quantities</Text>
-          <Text style={styles.text}>
-            1. <Text style={styles.bold}>Temperature:</Text> For instance, 25°C
-          </Text>
-          <Text style={styles.text}>
-            2. <Text style={styles.bold}>Mass:</Text> Descriptive value like temperature is a measure of...
-          </Text>
-        </View>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#001f3f" style={{ marginTop: 50 }} />
+        ) : error ? (
+          <Text style={{ textAlign: 'center', marginTop: 50, color: 'red' }}>Failed to load content</Text>
+        ) : !topicContent?.content ? (
+          <View style={{ alignItems: 'center', marginTop: 50 }}>
+            <Ionicons name="document-text-outline" size={60} color="#ccc" />
+            <Text style={{ color: '#666', marginTop: 15, fontSize: 16 }}>No content available</Text>
+          </View>
+        ) : (
+          <View style={styles.content}>
+            <Text style={styles.sectionTitle}>{topicContent?.title || topicName}</Text>
+            <Text style={styles.text}>{topicContent?.content || 'No content available.'}</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 50,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 15,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    backgroundColor: '#fff',
-    margin: 20,
-    padding: 20,
-    borderRadius: 15,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  heading: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginTop: 15,
-    marginBottom: 8,
-  },
-  text: {
-    fontSize: 14,
-    lineHeight: 22,
-    color: '#333',
-    marginBottom: 10,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, backgroundColor: '#f5f5f5', paddingTop: 50 },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 20 },
+  headerTitle: { fontSize: 18, fontWeight: 'bold', marginLeft: 15, flex: 1 },
+  pastQBtn: { backgroundColor: '#001f3f', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 15 },
+  pastQText: { color: '#fff', fontSize: 12, fontWeight: '600' },
+  scrollView: { flex: 1 },
+  content: { backgroundColor: '#fff', margin: 20, padding: 20, borderRadius: 15 },
+  sectionTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 15 },
+  text: { fontSize: 14, lineHeight: 22, color: '#333' },
 });
 
 export default TopicDetail;

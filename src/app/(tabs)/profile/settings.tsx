@@ -3,9 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useAppSelector } from '../../../components/redux/store';
 
 export default function SettingsScreen() {
   const [showLogoutModal, setShowLogoutModal] = React.useState(false);
+  const user = useAppSelector((state) => state.user.user);
   const menuItems = [
     {
       icon: 'person-outline',
@@ -57,22 +59,18 @@ export default function SettingsScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.profileCard}>
           <View style={styles.profileHeader}>
-            <Text style={styles.activeLabel}>Active</Text>
-            <Text style={styles.profileName}>Ogbonnya Daniel Kalu</Text>
+            <Text style={styles.activeLabel}>{user.activated ? 'Active' : 'Inactive'}</Text>
+            <Text style={styles.profileName}>{user.full_name || 'User'}</Text>
           </View>
         </View>
 
         <View style={styles.statsRow}>
           <View style={styles.stat}>
-            <Text style={styles.statValue}>100</Text>
+            <Text style={styles.statValue}>{user.level || '100'}</Text>
             <Text style={styles.statLabel}>LEVEL</Text>
           </View>
           <View style={styles.stat}>
-            <Text style={styles.statValue}>60%</Text>
-            <Text style={styles.statLabel}>Course Completion</Text>
-          </View>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>4.52</Text>
+            <Text style={styles.statValue}>{user.cgpa || '0.00'}</Text>
             <Text style={styles.statLabel}>C.G.P.A</Text>
           </View>
         </View>
@@ -160,7 +158,7 @@ const styles = StyleSheet.create({
   },
   statsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     backgroundColor: "#fff",
     marginTop: -60,
     marginHorizontal: 20,

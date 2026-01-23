@@ -4,6 +4,7 @@ import { ActivityIndicator, View } from "react-native";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import Toast from "react-native-toast-message";
+import ActivityTracker from '../components/redux/ActivityTracker';
 
 export default function RootLayout() {
   const LoadingSpinner = () => {
@@ -23,6 +24,7 @@ export default function RootLayout() {
     <>
       <Provider store={store}>
         <PersistGate loading={<LoadingSpinner />} persistor={persistor}>
+         <ActivityTracker />
           <Stack
             screenOptions={{
               headerShown: false,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
@@ -14,7 +14,7 @@ export default function AiDocumentScreen() {
   const token = useAppSelector((state) => state.auth.token);
   
   const [summarisePdf, { isLoading: isAnalyzing }] = useSummarisePdfMutation();
-  const { data: allAiData } = useListAllAiQuery(token || '', { skip: !token });
+  const { data: allAiData, refetch: refetchAllAi } = useListAllAiQuery(token || '', { skip: !token });
   const { data: aiContent } = useListAiContentQuery(
     { token: token || '', ai_id: selectedAiId || 0 },
     { skip: !token || !selectedAiId }
@@ -26,7 +26,6 @@ export default function AiDocumentScreen() {
         type: ['application/pdf'],
         copyToCacheDirectory: true,
       });
-
       if (!result.canceled && result.assets && result.assets.length > 0) {
         setDocument(result.assets[0]);
         setSummary('');
@@ -42,23 +41,14 @@ export default function AiDocumentScreen() {
       Toast.show({ type: 'error', text1: 'Please select a document and login' });
       return;
     }
-
     try {
-      const file = {
-        uri: document.uri,
-        name: document.name,
-        type: document.mimeType || 'application/pdf',
-      } as any;
-
+      const file = { uri: document.uri, name: document.name, type: document.mimeType || 'application/pdf' } as any;
       const response = await summarisePdf({ token, file }).unwrap();
       setSummary(response.summary);
       Toast.show({ type: 'success', text1: 'Document analyzed successfully' });
+      refetchAllAi(); // Refetch to get latest AI data
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Analysis failed',
-        text2: error?.data?.message || 'Please try again',
-      });
+      Toast.show({ type: 'error', text1: 'Analysis failed', text2: error?.data?.message || 'Please try again' });
     }
   };
 
@@ -68,9 +58,7 @@ export default function AiDocumentScreen() {
     setSelectedAiId(null);
   };
 
-  const viewAiContent = (aiId: number) => {
-    setSelectedAiId(aiId);
-  };
+  const viewAiContent = (aiId: number) => setSelectedAiId(aiId);
 
   return (
     <View style={styles.container}>
@@ -137,15 +125,9 @@ export default function AiDocumentScreen() {
               <Text style={styles.resultTitle}>Your AI Documents</Text>
             </View>
             {allAiData.map((item: any) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.aiCard}
-                onPress={() => viewAiContent(item.id)}
-              >
+              <TouchableOpacity key={item.id} style={styles.aiCard} onPress={() => viewAiContent(item.id)}>
                 <Ionicons name="document-text-outline" size={20} color="#001f3f" />
-                <Text style={styles.aiCardText} numberOfLines={2}>
-                  {item.content.substring(0, 100)}...
-                </Text>
+                <Text style={styles.aiCardText} numberOfLines={2}>{item.content.substring(0, 100)}...</Text>
                 <Ionicons name="chevron-forward" size={20} color="#666" />
               </TouchableOpacity>
             ))}
@@ -159,8 +141,6 @@ export default function AiDocumentScreen() {
               <Text style={styles.resultTitle}>AI Content Details</Text>
             </View>
             <Text style={styles.contentText}>{aiContent.content}</Text>
-            {/* <Text style={styles.metaText}>User ID: {aiContent.user_id}</Text>
-            <Text style={styles.metaText}>Content ID: {aiContent.id}</Text> */}
           </View>
         )}
       </ScrollView>
@@ -193,7 +173,6 @@ const styles = StyleSheet.create({
   resultTitle: { fontSize: 18, fontWeight: 'bold', color: '#001f3f' },
   summaryText: { fontSize: 15, lineHeight: 24, color: '#333' },
   contentText: { fontSize: 15, lineHeight: 24, color: '#333', marginBottom: 10 },
-  metaText: { fontSize: 12, color: '#666', marginTop: 5 },
   aiCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f9f9f9', padding: 15, borderRadius: 10, marginBottom: 10, gap: 10 },
   aiCardText: { flex: 1, fontSize: 14, color: '#333' },
 });

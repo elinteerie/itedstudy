@@ -22,6 +22,7 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const token = useAppSelector((state) => state.auth.token);
   const userName = useAppSelector((state) => state.user.user.full_name);
+  const activationStatus = useAppSelector((state) => state.user.user.activated);
 
   const { data: userInfo } = useGetUserInfoQuery(token || '', {
     skip: !token,
@@ -82,7 +83,7 @@ export default function HomeScreen() {
             <View style={{ flexDirection: "row", gap: 5, justifyContent: "flex-end", alignItems: "center" }}>
               <View style={styles.smallCircle} />
 
-              <Text style={{ fontSize: 10, color: "white" }}>Active</Text>
+              <Text style={{ fontSize: 10, color: "white" }}>{activationStatus ? "Active" : "Inactive"}</Text>
             </View>
           </View>
 

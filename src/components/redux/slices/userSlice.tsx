@@ -10,6 +10,7 @@ interface User {
   phone_number: string;
   activated: boolean;
   level: string;
+  cgpa: string;
   department: string;
   university_id: number;
 }
@@ -30,6 +31,7 @@ const initialState: UserState = {
     password: "",
     full_name: "",
     phone_number: "",
+    cgpa: "",
     activated: false,
   },
 };
