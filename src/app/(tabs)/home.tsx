@@ -4,20 +4,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import ProfileIcon2 from "../../assets/image/Male_User.png"
-import Telegram from "../../assets/image/Telegram.png"
-import Facebook from "../../assets/image/Facebook.png"
-import Instagram from "../../assets/image/Instagram.png"
-import Tiktok from "../../assets/image/TikTok.png"
+// import Telegram from "../../assets/image/Telegram.png"
+// import Facebook from "../../assets/image/Facebook.png"
+// import Instagram from "../../assets/image/Instagram.png"
+// import Tiktok from "../../assets/image/TikTok.png"
 import UNIAI from "../../assets/image/Uni_AI.png"
 import CGPACalculator from "../../assets/image/Gpa_Calculator.png"
 import PastQuestion from "../../assets/image/Quiz.png"
 import LectureNotes from "../../assets/image/Copybook.png"
 import Updates from "../../assets/image/Updates.png"
 import UniversityCampus from "../../assets/image/University.png"
-import {ProfileIcon} from '../../assets/svg';
+import { ProfileIcon, Instagram, Facebook, Telegram, Tiktok } from '../../assets/svg';
+import { useAppSelector } from "../../components/redux/store";
+import { useGetUserInfoQuery } from "../../components/services/userService";
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
+  const token = useAppSelector((state) => state.auth.token);
+  const userName = useAppSelector((state) => state.user.user.full_name);
+
+  const { data: userInfo } = useGetUserInfoQuery(token || '', {
+    skip: !token,
+  });
 
   const menuItems = [
     {
@@ -70,7 +78,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.greeting}>Ugwuanyanwu Emmanuel</Text>
+            <Text style={styles.greeting}>{userName || userInfo?.full_name || 'Guest User'}</Text>
             <View style={{ flexDirection: "row", gap: 5, justifyContent: "flex-end", alignItems: "center" }}>
               <View style={styles.smallCircle} />
 
@@ -84,7 +92,7 @@ export default function HomeScreen() {
             <TouchableOpacity onPress={() => router.push('/(tabs)/profile/settings')}>
               <ProfileIcon />
               {/* <Image source={ProfileIcon2} /> */}
-              </TouchableOpacity>
+            </TouchableOpacity>
             <Ionicons name="ellipsis-vertical" size={24} color="#fff" />
           </View>
         </View>
@@ -203,11 +211,14 @@ export default function HomeScreen() {
                 flexDirection: "row",
               }}
             >
-
-              <Image source={Instagram} />
+              <Instagram />
+              <Telegram />
+              <Facebook />
+              <Tiktok />
+              {/* <Image source={Instagram} />
               <Image source={Telegram} />
               <Image source={Facebook} />
-              <Image source={Tiktok} />
+              <Image source={Tiktok} /> */}
 
             </View>
           </TouchableOpacity>
@@ -411,23 +422,23 @@ const styles = StyleSheet.create({
     borderColor: "#00052D"
   },
 
-fourthContainer: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: 10,
-  borderRadius: 10,
-  marginTop: 10,
-  backgroundColor: '#FFFFFF',
-  elevation: 3,
-  shadowColor: '#000',
-  shadowOffset: {
-    height: 2,
-    width: 0,
+  fourthContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+    backgroundColor: '#FFFFFF',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      height: 2,
+      width: 0,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
   },
-  shadowOpacity: 0.15,
-  shadowRadius: 3,
-},
   seventhText: {
     fontSize: 15,
     color: "#0F065E",

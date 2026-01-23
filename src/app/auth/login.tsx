@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import { useLoginMutation } from "../../components/services/userService";
@@ -7,11 +7,12 @@ import { useAppDispatch } from "../../components/redux/store";
 import { loginUser, updateExpires } from "../../components/redux/slices/authSlice";
 import Toast from "react-native-toast-message";
 import { LoginRequestBody } from '../../components/services/userService';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [showPassword, setShowPassword] = useState(false);
     const dispatch = useAppDispatch();
     const [login, { isLoading }] = useLoginMutation();
 
@@ -45,8 +46,15 @@ export default function LoginScreen() {
     };
 
     return (
+      
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        > 
+          <StatusBar style="dark" />
         <View style={styles.container}>
-            <StatusBar style="dark" />
+          
 
             <Text style={styles.title}>Log In</Text>
             <Text style={styles.subtitle}>Enter your details to log in</Text>
@@ -62,22 +70,28 @@ export default function LoginScreen() {
                     autoCapitalize="none"
                 />
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    placeholderTextColor="#999"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
+                <View style={{ position: 'relative' }}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        placeholderTextColor="#999"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                    />
+                    <TouchableOpacity
+                        style={styles.eyeIcon}
+                        onPress={() => setShowPassword(!showPassword)}
+                    >
+                        <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#666" />
+                    </TouchableOpacity>
+                </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/(tabs)/profile/changePassword')}>
                     <Text style={styles.forgotPassword}>Forgotten Password?</Text>
                 </TouchableOpacity>
 
-                {/* <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Log In</Text>
-                </TouchableOpacity> */}
+
                 <TouchableOpacity
                     style={styles.button}
                     onPress={handleLogin}
@@ -96,7 +110,8 @@ export default function LoginScreen() {
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+            </View>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -160,5 +175,10 @@ const styles = StyleSheet.create({
         color: '#001f3f',
         fontSize: 14,
         fontWeight: '600',
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 15,
+        top: 15,
     },
 });

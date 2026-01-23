@@ -1,62 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
+import { useSummarisePdfMutation, useListAllAiQuery, useListAiContentQuery } from '../components/services/userService';
+import { useAppSelector } from '../components/redux/store';
+import Toast from 'react-native-toast-message';
 
 export default function AiDocumentScreen() {
   const [document, setDocument] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [summary, setSummary] = useState('');
-  const [generatedContent, setGeneratedContent] = useState('');
-  const [pastQuestions, setPastQuestions] = useState<{ id: number; question: string }[]>([]);
+  const [selectedAiId, setSelectedAiId] = useState<number | null>(null);
+
+  const token = useAppSelector((state) => state.auth.token);
+  
+  const [summarisePdf, { isLoading: isAnalyzing }] = useSummarisePdfMutation();
+  const { data: allAiData } = useListAllAiQuery(token || '', { skip: !token });
+  const { data: aiContent } = useListAiContentQuery(
+    { token: token || '', ai_id: selectedAiId || 0 },
+    { skip: !token || !selectedAiId }
+  );
 
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'],
+        type: ['application/pdf'],
         copyToCacheDirectory: true,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         setDocument(result.assets[0]);
         setSummary('');
-        setGeneratedContent('');
-        setPastQuestions([]);
+        setSelectedAiId(null);
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to pick document');
     }
   };
 
-  const analyzeDocument = () => {
-    if (!document) return;
-    
-    setIsAnalyzing(true);
-    
-    // TODO: Call your backend API here with the document
-    // For now, simulating with timeout
-    setTimeout(() => {
-      setSummary('This document covers fundamental concepts in Computer Science including data structures, algorithms, and system design.');
-      
-      setGeneratedContent('Key Topics:\n\n1. Data Structures\n- Arrays and Linked Lists\n- Trees and Graphs\n\n2. Algorithms\n- Sorting and Searching\n- Graph Traversal');
-      
-      setPastQuestions([
-        { id: 1, question: 'Explain the difference between a binary tree and a binary search tree.' },
-        { id: 2, question: 'What is the time complexity of Quick Sort in the worst case?' },
-        { id: 3, question: 'Describe how a hash table handles collisions.' },
-        { id: 4, question: 'Compare and contrast DFS and BFS algorithms.' },
-        { id: 5, question: 'What is Big O notation and why is it important?' },
-      ]);
-      
-      setIsAnalyzing(false);
-    }, 2000);
+  const analyzeDocument = async () => {
+    if (!document || !token) {
+      Toast.show({ type: 'error', text1: 'Please select a document and login' });
+      return;
+    }
+
+    try {
+      const file = {
+        uri: document.uri,
+        name: document.name,
+        type: document.mimeType || 'application/pdf',
+      } as any;
+
+      const response = await summarisePdf({ token, file }).unwrap();
+      setSummary(response.summary);
+      Toast.show({ type: 'success', text1: 'Document analyzed successfully' });
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Analysis failed',
+        text2: error?.data?.message || 'Please try again',
+      });
+    }
   };
 
   const removeDocument = () => {
     setDocument(null);
     setSummary('');
-    setGeneratedContent('');
-    setPastQuestions([]);
+    setSelectedAiId(null);
+  };
+
+  const viewAiContent = (aiId: number) => {
+    setSelectedAiId(aiId);
   };
 
   return (
@@ -70,7 +83,7 @@ export default function AiDocumentScreen() {
         <View style={styles.uploadSection}>
           <Ionicons name="document-text" size={60} color="#001f3f" />
           <Text style={styles.uploadTitle}>Upload Document</Text>
-          <Text style={styles.uploadSubtitle}>PDF, DOC, DOCX, TXT</Text>
+          <Text style={styles.uploadSubtitle}>PDF only</Text>
           
           {!document ? (
             <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
@@ -117,30 +130,37 @@ export default function AiDocumentScreen() {
           </View>
         )}
 
-        {generatedContent && (
+        {allAiData && Array.isArray(allAiData) && allAiData.length > 0 && (
           <View style={styles.resultSection}>
             <View style={styles.resultHeader}>
-              <Ionicons name="create-outline" size={24} color="#001f3f" />
-              <Text style={styles.resultTitle}>Generated Content</Text>
+              <Ionicons name="list-outline" size={24} color="#001f3f" />
+              <Text style={styles.resultTitle}>Your AI Documents</Text>
             </View>
-            <Text style={styles.contentText}>{generatedContent}</Text>
+            {allAiData.map((item: any) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.aiCard}
+                onPress={() => viewAiContent(item.id)}
+              >
+                <Ionicons name="document-text-outline" size={20} color="#001f3f" />
+                <Text style={styles.aiCardText} numberOfLines={2}>
+                  {item.content.substring(0, 100)}...
+                </Text>
+                <Ionicons name="chevron-forward" size={20} color="#666" />
+              </TouchableOpacity>
+            ))}
           </View>
         )}
 
-        {pastQuestions.length > 0 && (
+        {aiContent && (
           <View style={styles.resultSection}>
             <View style={styles.resultHeader}>
-              <Ionicons name="help-circle-outline" size={24} color="#001f3f" />
-              <Text style={styles.resultTitle}>Generated Past Questions</Text>
+              <Ionicons name="create-outline" size={24} color="#001f3f" />
+              <Text style={styles.resultTitle}>AI Content Details</Text>
             </View>
-            {pastQuestions.map((item) => (
-              <View key={item.id} style={styles.questionCard}>
-                <View style={styles.questionNumber}>
-                  <Text style={styles.questionNumberText}>{item.id}</Text>
-                </View>
-                <Text style={styles.questionText}>{item.question}</Text>
-              </View>
-            ))}
+            <Text style={styles.contentText}>{aiContent.content}</Text>
+            {/* <Text style={styles.metaText}>User ID: {aiContent.user_id}</Text>
+            <Text style={styles.metaText}>Content ID: {aiContent.id}</Text> */}
           </View>
         )}
       </ScrollView>
@@ -172,9 +192,8 @@ const styles = StyleSheet.create({
   resultHeader: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 15, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: '#eee' },
   resultTitle: { fontSize: 18, fontWeight: 'bold', color: '#001f3f' },
   summaryText: { fontSize: 15, lineHeight: 24, color: '#333' },
-  contentText: { fontSize: 15, lineHeight: 24, color: '#333' },
-  questionCard: { flexDirection: 'row', backgroundColor: '#f9f9f9', padding: 15, borderRadius: 10, marginBottom: 10, gap: 12 },
-  questionNumber: { backgroundColor: '#001f3f', width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
-  questionNumberText: { color: '#fff', fontSize: 14, fontWeight: 'bold' },
-  questionText: { fontSize: 15, color: '#333', flex: 1, lineHeight: 22 },
+  contentText: { fontSize: 15, lineHeight: 24, color: '#333', marginBottom: 10 },
+  metaText: { fontSize: 12, color: '#666', marginTop: 5 },
+  aiCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f9f9f9', padding: 15, borderRadius: 10, marginBottom: 10, gap: 10 },
+  aiCardText: { flex: 1, fontSize: 14, color: '#333' },
 });

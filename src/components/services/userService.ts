@@ -110,13 +110,13 @@ interface Lesson {
 }
 
 interface SummarisePdfResponse {
-  [key: string]: any;
+  summary: string;
 }
 
 interface PastQuestion {
   id: number;
   question: string;
-  // Add other fields
+  // other fields
 }
 
 interface ListAiContentResponse {
@@ -125,6 +125,26 @@ interface ListAiContentResponse {
 
 interface ListAllAiResponse {
   [key: string]: any;
+}
+
+interface SummarisePdfRequestBody {
+  file: FormData;
+}
+
+interface ListAiContentParams {
+  ai_id: number;
+}
+
+interface AiContent {
+  content: string;
+  id: number;
+  user_id: number;
+}
+
+interface AllAiItem {
+  content: string;
+  id: number;
+  user_id: number;
 }
 
 export const userApi = createApi({
@@ -305,22 +325,24 @@ export const userApi = createApi({
 
     summarisePdf: builder.mutation<
       SummarisePdfResponse,
-      { token: string; file: FormData }
+      { token: string; file: File }
     >({
-      query: ({ token, file }) => ({
-        url: "ai/summarise-pdf",
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: file,
-      }),
+      query: ({ token, file }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        return {
+          url: "ai/summarise-pdf",
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        };
+      },
     }),
 
-    listAiContent: builder.query<
-      ListAiContentResponse,
-      { token: string; ai_id: number }
-    >({
+    listAiContent: builder.query<AiContent, { token: string; ai_id: number }>({
       query: ({ token, ai_id }) => ({
         url: `ai/list-an-ai-content?ai_id=${ai_id}`,
         method: "GET",
@@ -330,7 +352,7 @@ export const userApi = createApi({
       }),
     }),
 
-    listAllAi: builder.query<ListAllAiResponse, string>({
+    listAllAi: builder.query<AllAiItem, string>({
       query: (token) => ({
         url: "ai/list-all-ai",
         method: "GET",

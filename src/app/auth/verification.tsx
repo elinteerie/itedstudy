@@ -84,7 +84,7 @@ export default function VerificationScreen() {
 
   const handleContinue = () => {
     setShowModal(false);
-    router.push('/(tabs)/profile/editProfile');
+    router.push('/auth/login');
   };
 
   return (

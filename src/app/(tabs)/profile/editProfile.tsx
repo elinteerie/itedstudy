@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -9,6 +9,8 @@ import { useAppSelector, useAppDispatch } from "../../../components/redux/store"
 import Toast from "react-native-toast-message";
 import { setUserInfo } from '../../../components/redux/slices/userSlice';
 import { UpdateUserInfoRequestBody } from '../../../components/services/userService';
+import { useGetUserInfoQuery } from "../../../components/services/userService";
+import { useEffect } from 'react';
 
 export default function EditProfileScreen() {
   const [fullName, setFullName] = useState('');
@@ -17,10 +19,30 @@ export default function EditProfileScreen() {
   const [level, setLevel] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  const userFromState = useAppSelector((state) => state.user.user);
   const token = useAppSelector((state) => state.auth.token);
+  const { data: userInfo } = useGetUserInfoQuery(token || '', {
+    skip: !token,
+  });
+
+  useEffect(() => {
+    if (userInfo) {
+      if (userInfo.full_name) setFullName(userInfo.full_name || ''); else if (userFromState.full_name) setFullName(userFromState.full_name || '');
+      setEmail(userInfo.email || '');
+      setDepartment(userInfo.department || '');
+      setLevel(userInfo.level || '');
+    } else if (userFromState.full_name) {
+      setFullName(userFromState.full_name || '');
+      setEmail(userFromState.email || '');
+      setDepartment(userFromState.department || '');
+      setLevel(userFromState.level || '');
+    }
+  }, [userInfo, userFromState]);
+
+
   const dispatch = useAppDispatch();
   const [updateUserInfo, { isLoading: updating }] = useUpdateUserInfoMutation();
-  console.log("Token in EditProfileScreen:", token);
+  console.log("Token in EditProfileScreen:", token, userInfo?.full_name);
 
   // const handleUpdate = () => {
   //   setShowModal(true);
@@ -70,7 +92,11 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    // <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <StatusBar style="dark" />
 
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -154,7 +180,7 @@ export default function EditProfileScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

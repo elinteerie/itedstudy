@@ -7,6 +7,8 @@ import {
     StyleSheet,
     ScrollView,
     ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -21,6 +23,7 @@ import { useAppDispatch } from "../../components/redux/store";
 import { loginUser, updateExpires } from "../../components/redux/slices/authSlice";
 import Toast from "react-native-toast-message";
 import { CreateUserRequestBody } from '../../components/services/userService';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SignUpScreen() {
     const [fullName, setFullName] = useState('');
@@ -30,6 +33,8 @@ export default function SignUpScreen() {
     const [department, setDepartment] = useState('');
     const [password, setPassword] = useState('');
     const [retypePassword, setRetypePassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showRetypePassword, setShowRetypePassword] = useState(false);
 
     const dispatch = useAppDispatch();
     const [createUser, { isLoading: creating }] = useCreateUserMutation();
@@ -84,7 +89,12 @@ export default function SignUpScreen() {
     };
 
     return (
-        <View style={styles.container}>
+       
+        <KeyboardAvoidingView
+           style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+             <View style={styles.container}>
             <StatusBar style="dark" />
 
             <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -104,15 +114,23 @@ export default function SignUpScreen() {
                         onChangeText={setFullName}
                     />
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email Address"
-                        placeholderTextColor="#999"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                    />
+                    <View style={{ position: 'relative' }}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Password"
+                            placeholderTextColor="#999"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword}
+                        />
+                        <TouchableOpacity
+                            style={styles.eyeIcon}
+                            onPress={() => setShowPassword(!showPassword)}
+                        >
+                            <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#666" />
+                        </TouchableOpacity>
+                    </View>
+
 
                     <View style={styles.pickerContainer}>
                         {loadingUnis ? (
@@ -153,28 +171,29 @@ export default function SignUpScreen() {
                         onChangeText={setDepartment}
                     />
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        placeholderTextColor="#999"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
-                    />
+                    <View style={{ position: 'relative' }}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Retype Password"
+                            placeholderTextColor="#999"
+                            value={retypePassword}
+                            onChangeText={setRetypePassword}
+                            secureTextEntry={!showRetypePassword}
+                        />
+                        <TouchableOpacity
+                            style={styles.eyeIcon}
+                            onPress={() => setShowRetypePassword(!showRetypePassword)}
+                        >
+                            <Ionicons name={showRetypePassword ? "eye" : "eye-off"} size={20} color="#666" />
+                        </TouchableOpacity>
+                    </View>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Retype Password"
-                        placeholderTextColor="#999"
-                        value={retypePassword}
-                        onChangeText={setRetypePassword}
-                        secureTextEntry
-                    />
+
 
                     <TouchableOpacity
                         style={styles.button}
                         onPress={handleSignUp}
-                    // disabled={creating || resending || loadingUnis || !institution}
+                    disabled={creating || resending || loadingUnis || !institution}
                     >
                         <View style={styles.buttonContent}>
                             <View style={styles.checkCircle}>
@@ -194,7 +213,8 @@ export default function SignUpScreen() {
                     </View>
                 </View>
             </ScrollView>
-        </View>
+            </View>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -287,5 +307,10 @@ const styles = StyleSheet.create({
     picker: {
         height: 55,
         color: '#000',
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 15,
+        top: 15,
     },
 });
