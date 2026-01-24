@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     gpaDisplay: { alignItems: 'center', marginBottom: 15 },
     gpaValue: { fontSize: 42, fontWeight: 'bold', color: '#001f3f' },
     gpaLabel: { fontSize: 12, color: '#666' },
-    tableContainer: { flex: 1, backgroundColor: '#f5f5f5', borderRadius: 15, padding: 12 },
+    tableContainer: { flex: 1, backgroundColor: '#f5f5f5', borderRadius: 15, padding: 12, marginBottom: 10 },
     tableHeader: { flexDirection: 'row', backgroundColor: '#001f3f', paddingVertical: 10, paddingHorizontal: 8, borderRadius: 8, marginBottom: 10 },
     headerText: { color: '#fff', fontWeight: 'bold', fontSize: 13, flex: 1, textAlign: 'center' },
     tableRow: { flexDirection: 'row', gap: 6, marginBottom: 8 },

@@ -8,13 +8,16 @@ import ProfileIcon2 from "../../assets/image/Male_User.png"
 // import Facebook from "../../assets/image/Facebook.png"
 // import Instagram from "../../assets/image/Instagram.png"
 // import Tiktok from "../../assets/image/TikTok.png"
-import UNIAI from "../../assets/image/Uni_AI.png"
-import CGPACalculator from "../../assets/image/Gpa_Calculator.png"
-import PastQuestion from "../../assets/image/Quiz.png"
-import LectureNotes from "../../assets/image/Copybook.png"
+// import UNIAI from "../../assets/image/Uni_AI.png"
+// import CGPACalculator from "../../assets/image/Gpa_Calculator.png"
+// import PastQuestion from "../../assets/image/Quiz.png"
+// import LectureNotes from "../../assets/image/Copybook.png"
 import Updates from "../../assets/image/Updates.png"
-import UniversityCampus from "../../assets/image/University.png"
-import { ProfileIcon, Instagram, Facebook, Telegram, Tiktok } from '../../assets/svg';
+// import UniversityCampus from "../../assets/image/University.png"
+import {
+  ProfileIcon, Instagram, Facebook, Telegram, Tiktok, UNIAI, CGPACalculator
+  , PastQuestion, LectureNotes, UniversityCampus
+} from '../../assets/svg';
 import { useAppSelector } from "../../components/redux/store";
 import { useGetUserInfoQuery } from "../../components/services/userService";
 
@@ -32,28 +35,28 @@ export default function HomeScreen() {
     {
       title: 'Lecture Notes',
       subtitle: 'Get full access to your course outlines and read available topics',
-      image: LectureNotes,
+      Icon: LectureNotes,
       color: '#0F065E',
       route: '/(tabs)/courses'
     },
     {
       title: 'Past Question',
       subtitle: 'Get past questions, practice and ace your exams',
-      image: PastQuestion,
+      Icon: PastQuestion,
       color: '#0F065E',
       route: '/availableCourses'
     },
     {
       title: 'C.G.P.A Calculator',
       subtitle: 'Calculate you semester GPA and cumulative GPA',
-      image: CGPACalculator,
+      Icon: CGPACalculator,
       color: '#0F065E',
       route: '/(tabs)/cgpa'
     },
     {
       title: 'Uni Ai',
       subtitle: 'Your university Ai assistant',
-      image: UNIAI,
+      Icon: UNIAI,
       color: '#F70000',
       route: '/aiDocumentAnalyzer'
     },
@@ -144,21 +147,25 @@ export default function HomeScreen() {
         ))}
 
         <View style={styles.menuGrid}>
-          {menuItems.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.menuItem, { backgroundColor: item.color }]}
-              onPress={() => router.push(item.route as any)}
-            >
-              <View style={{ width: "70%" }}>
-                <Text style={styles.menuTitle}>{item.title}</Text>
-                <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
-              </View>
-              <View style={styles.menuIconContainer}>
-                <Image source={item.image} style={{ width: 50, height: 50 }} />
-              </View>
-            </TouchableOpacity>
-          ))}
+          {menuItems.map((item, index) => {
+            const IconComponent = item.Icon;// Extract the SVG component
+
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[styles.menuItem, { backgroundColor: item.color }]}
+                onPress={() => router.push(item.route as any)}
+              >
+               <View style={{ width: "70%" }}>
+                  <Text style={styles.menuTitle}>{item.title}</Text>
+                  <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+                </View>
+                <IconComponent width={60} height={60} />
+              </TouchableOpacity>
+            );
+          })}
+
+        
         </View>
 
         <View style={styles.fifthContainer}>
@@ -188,7 +195,7 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View style={styles.smallContainer}>
-              <Image source={UniversityCampus} />
+              <UniversityCampus />
             </View>
           </TouchableOpacity>
           <TouchableOpacity

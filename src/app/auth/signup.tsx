@@ -89,130 +89,132 @@ export default function SignUpScreen() {
     };
 
     return (
-       
+
         <KeyboardAvoidingView
-           style={{ flex: 1 }}
+            style={{ flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-             <View style={styles.container}>
-            <StatusBar style="dark" />
+            <View style={styles.container}>
+                <StatusBar style="dark" />
 
-            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-                <AntDesign name="arrow-left" size={24} color="black" />
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+                    <AntDesign name="arrow-left" size={24} color="black" />
+                </TouchableOpacity>
 
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.title}>Sign Up</Text>
-                <Text style={styles.subtitle}>Enter your details to sign up</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Text style={styles.title}>Sign Up</Text>
+                    <Text style={styles.subtitle}>Enter your details to sign up</Text>
 
-                <View style={styles.form}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Full Name"
-                        placeholderTextColor="#999"
-                        value={fullName}
-                        onChangeText={setFullName}
-                    />
-
-                    <View style={{ position: 'relative' }}>
+                    <View style={styles.form}>
                         <TextInput
                             style={styles.input}
-                            placeholder="Password"
+                            placeholder="Full Name"
                             placeholderTextColor="#999"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={!showPassword}
+                            value={fullName}
+                            onChangeText={setFullName}
                         />
-                        <TouchableOpacity
-                            style={styles.eyeIcon}
-                            onPress={() => setShowPassword(!showPassword)}
-                        >
-                            <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#666" />
-                        </TouchableOpacity>
-                    </View>
 
-
-                    <View style={styles.pickerContainer}>
-                        {loadingUnis ? (
-                            <ActivityIndicator size="small" color="#001f3f" style={{ padding: 15 }} />
-                        ) : error ? (
-                            <Text style={{ color: 'red', padding: 15 }}>Failed to load universities</Text>
-                        ) : (
-                            <Picker
-                                selectedValue={institution}
-                                onValueChange={(value) => setInstitution(value)}
-                                style={styles.picker}
+                        <View style={{ position: 'relative' }}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Password"
+                                placeholderTextColor="#999"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry={!showPassword}
+                            />
+                            <TouchableOpacity
+                                style={styles.eyeIcon}
+                                onPress={() => setShowPassword(!showPassword)}
                             >
-                                <Picker.Item label="Select University" value="" />
-                                {universities.map((uni) => (
-                                    <Picker.Item
-                                        key={uni.id}
-                                        label={uni.name}
-                                        value={uni.id.toString()}
-                                    />
-                                ))}
-                            </Picker>
-                        )}
-                    </View>
+                                <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#666" />
+                            </TouchableOpacity>
+                        </View>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Level"
-                        placeholderTextColor="#999"
-                        value={level}
-                        onChangeText={setLevel}
-                    />
+                        <View style={{ position: 'relative' }}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Retype Password"
+                                placeholderTextColor="#999"
+                                value={retypePassword}
+                                onChangeText={setRetypePassword}
+                                secureTextEntry={!showRetypePassword}
+                            />
+                            <TouchableOpacity
+                                style={styles.eyeIcon}
+                                onPress={() => setShowRetypePassword(!showRetypePassword)}
+                            >
+                                <Ionicons name={showRetypePassword ? "eye" : "eye-off"} size={20} color="#666" />
+                            </TouchableOpacity>
+                        </View>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Department"
-                        placeholderTextColor="#999"
-                        value={department}
-                        onChangeText={setDepartment}
-                    />
 
-                    <View style={{ position: 'relative' }}>
+                        <View style={styles.pickerContainer}>
+                            {loadingUnis ? (
+                                <ActivityIndicator size="small" color="#001f3f" style={{ padding: 15 }} />
+                            ) : error ? (
+                                <Text style={{ color: 'red', padding: 15 }}>Failed to load universities</Text>
+                            ) : (
+                                <Picker
+                                    selectedValue={institution}
+                                    onValueChange={(value) => setInstitution(value)}
+                                    style={styles.picker}
+                                >
+                                    <Picker.Item label="Select University" value="" />
+                                    {universities.map((uni) => (
+                                        <Picker.Item
+                                            key={uni.id}
+                                            label={uni.name}
+                                            value={uni.id.toString()}
+                                        />
+                                    ))}
+                                </Picker>
+                            )}
+                        </View>
+
                         <TextInput
                             style={styles.input}
-                            placeholder="Retype Password"
+                            placeholder="Level"
                             placeholderTextColor="#999"
-                            value={retypePassword}
-                            onChangeText={setRetypePassword}
-                            secureTextEntry={!showRetypePassword}
+                            value={level}
+                            onChangeText={setLevel}
                         />
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Department"
+                            placeholderTextColor="#999"
+                            value={department}
+                            onChangeText={setDepartment}
+                        />
+
+
+
+
+
                         <TouchableOpacity
-                            style={styles.eyeIcon}
-                            onPress={() => setShowRetypePassword(!showRetypePassword)}
+                            style={styles.button}
+                            onPress={handleSignUp}
+                            disabled={creating || resending || loadingUnis || !institution}
                         >
-                            <Ionicons name={showRetypePassword ? "eye" : "eye-off"} size={20} color="#666" />
-                        </TouchableOpacity>
-                    </View>
-
-
-
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={handleSignUp}
-                    disabled={creating || resending || loadingUnis || !institution}
-                    >
-                        <View style={styles.buttonContent}>
-                            <View style={styles.checkCircle}>
-                                <Text style={styles.checkMark}>✓</Text>
+                            <View style={styles.buttonContent}>
+                                <View style={styles.checkCircle}>
+                                    <Text style={styles.checkMark}>✓</Text>
+                                </View>
+                                <Text style={styles.buttonText}>
+                                    {creating || resending ? "Creating..." : "Finish"}
+                                </Text>
                             </View>
-                            <Text style={styles.buttonText}>
-                                {creating || resending ? "Creating..." : "Finish"}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-
-                    <View style={styles.footer}>
-                        <Text style={styles.footerText}>Already have an account? </Text>
-                        <TouchableOpacity onPress={() => router.push("/auth/login")}>
-                            <Text style={styles.signInText}>Sign In</Text>
                         </TouchableOpacity>
+
+                        <View style={styles.footer}>
+                            <Text style={styles.footerText}>Already have an account? </Text>
+                            <TouchableOpacity onPress={() => router.push("/auth/login")}>
+                                <Text style={styles.signInText}>Sign In</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
+                </ScrollView>
             </View>
         </KeyboardAvoidingView>
     );

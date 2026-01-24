@@ -5,6 +5,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useSummarisePdfMutation, useListAllAiQuery, useListAiContentQuery } from '../components/services/userService';
 import { useAppSelector } from '../components/redux/store';
 import Toast from 'react-native-toast-message';
+import { router } from 'expo-router';
 
 export default function AiDocumentScreen() {
   const [document, setDocument] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
@@ -12,7 +13,7 @@ export default function AiDocumentScreen() {
   const [selectedAiId, setSelectedAiId] = useState<number | null>(null);
 
   const token = useAppSelector((state) => state.auth.token);
-  
+
   const [summarisePdf, { isLoading: isAnalyzing }] = useSummarisePdfMutation();
   const { data: allAiData, refetch: refetchAllAi } = useListAllAiQuery(token || '', { skip: !token });
   const { data: aiContent } = useListAiContentQuery(
@@ -62,7 +63,11 @@ export default function AiDocumentScreen() {
 
   return (
     <View style={styles.container}>
+
       <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Uni AI</Text>
         <Text style={styles.headerSubtitle}>Your university AI assistant</Text>
       </View>
@@ -72,7 +77,7 @@ export default function AiDocumentScreen() {
           <Ionicons name="document-text" size={60} color="#001f3f" />
           <Text style={styles.uploadTitle}>Upload Document</Text>
           <Text style={styles.uploadSubtitle}>PDF only</Text>
-          
+
           {!document ? (
             <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
               <Ionicons name="cloud-upload-outline" size={24} color="#fff" />
@@ -150,7 +155,7 @@ export default function AiDocumentScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
-  header: { backgroundColor: '#d32f2f', paddingTop: 60, paddingBottom: 30, paddingHorizontal: 20 },
+  header: { backgroundColor: '#d32f2f', paddingTop: 40, paddingBottom: 30, paddingHorizontal: 20 },
   headerTitle: { fontSize: 32, fontWeight: 'bold', color: '#fff', marginBottom: 5 },
   headerSubtitle: { fontSize: 16, color: '#fff', opacity: 0.9 },
   content: { flex: 1, padding: 20 },
@@ -175,4 +180,8 @@ const styles = StyleSheet.create({
   contentText: { fontSize: 15, lineHeight: 24, color: '#333', marginBottom: 10 },
   aiCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f9f9f9', padding: 15, borderRadius: 10, marginBottom: 10, gap: 10 },
   aiCardText: { flex: 1, fontSize: 14, color: '#333' },
+  backButton: {
+    marginBottom: 20,
+    
+  },
 });

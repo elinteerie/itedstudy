@@ -153,7 +153,7 @@ interface AllAiItem {
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: BaseUrl,
+    baseUrl: "http://108.181.189.20:8005/",
   }),
   endpoints: (builder) => ({
     // listUniversities: builder.query<University[], void>({

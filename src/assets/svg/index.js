@@ -151,3 +151,161 @@ export const Instagram = (props) => (
     </Defs>
   </Svg>
 );
+
+export const UNIAI = (props) => (
+  <Svg
+    width={35}
+    height={35}
+    viewBox="0 0 35 35"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    {...props}
+  >
+    <Rect width={35} height={35} fill="url(#pattern0_4686_403)" />
+    <Defs>
+      <Pattern
+        id="pattern0_4686_403"
+        patternContentUnits="objectBoundingBox"
+        width={1}
+        height={1}
+      >
+        <Use xlinkHref="#image0_4686_403" transform="scale(0.0111111)" />
+      </Pattern>
+      <Image
+        id="image0_4686_403"
+        width={90}
+        height={90}
+        preserveAspectRatio="none"
+        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACY0lEQVR4nO3cwW7TQBgE4IEDUlF5YMoDEK4FRB6QwK1wKddBaX2gFlZsx5P5/2i+e0e7U8fetZ0AERERERERERHxhOQbkp9I/uByB5K7Y4Yrv41hIufaufLbWHmkjf105bfBjcCU34a6CIrz21AXQXF+G+oiKM5vQ10ExfltqIugOL+N0Xzez9kc8HkTcreiaEX+nA2Rf+MzGtDtgr97t6JoRf6uxcZnNJC7BUfchxVFK/KPR+tcB7hwI2iSD5dqRajz4VKtCHU+XKoVoc6HS7Ui1PlwqVaEOh8u1Yo4M//FhmjJxkeOG0GN/Nu1Gx+5Cxehzn+xIVqy8ZG7cBH2fLhUK0KdD5dqRajz4VKtCHU+XKoVoc6HS7Ui1PlwqVaEOh8u1YpQ58OlWhHqfLhUK0KdD5dqRajz4VKtCHU+XKoVoc6HS7Ui1PlwqVaEOh8uV/BKWMsnLB1fCWv5hKXjK2H/yhOWc80senWOXLUi1PlwqVaEOh8uo3Fk1XGhorPquFDRWXWoLD3HTemSD5dqRajz4VKtCHU+XKoVoc6HS7Ui1PlwqVaEOh8uC7+nN+V7k/zJHLmNfornY5P8yRy54ZbkbuWRd5j541XufP93wSMiIuIEkq9JvqpeVJlxknxL8ivJ3yuWWdfqF8kvJG+2LHrvnlVh+y0/Vn/csyns8dhRiu5S9HBU59Qx7dsmJQ9F35D8PFwA4tkDyftNL4Yr/jH/hWK6jLP9BNhknO0nwCbjnDRxLn9AMV3GOWnYMY3do5gu4zy1StkPa8zH4xLIenVuPs6TjjdqStysuZJxRkREoLO/N/lrecghYW8AAAAASUVORK5CYII="
+      />
+    </Defs>
+  </Svg>
+);
+
+export const CGPACalculator = (props) => (
+  <Svg
+    width={35}
+    height={35}
+    viewBox="0 0 35 35"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    {...props}
+  >
+    <Rect width={35} height={35} fill="url(#pattern0_4686_398)" />
+    <Defs>
+      <Pattern
+        id="pattern0_4686_398"
+        patternContentUnits="objectBoundingBox"
+        width={1}
+        height={1}
+      >
+        <Use xlinkHref="#image0_4686_398" transform="scale(0.0111111)" />
+      </Pattern>
+      <Image
+        id="image0_4686_398"
+        width={90}
+        height={90}
+        preserveAspectRatio="none"
+        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEVElEQVR4nO2cTWgeRRiANz9N2lpa66FqouilLVVJaesPnkTpRWutGqSoBY8eTJtCJU2LIojeBMGDYi+WUFqVnj0WCv3R+pPEQ+mhUPBQKIH8mBwq2DxlYBI2L7P7ze6yk91v3wf2kG/efWf22cnszOTLRpGiKIqiKIqiKIqiKIoSAWuBYeA3YIH2ZQH4FTgC9Aa99cBjwCTNY8Jce8ie3ETJcdnl92w7XDSdwyFEmzG56VwNIXp+ta+yAsyHEK0AKjoQKrqhoi8CHwI7gI3AGuAR4DXgO4/x3pQfTzlOAl/bBcWiZ5u+d+Q5VVfR08DrHrn6gF9S8tzJ0K5dwF8eN26949z1WVe3Udl4tGEGeCpDvm7gfFHRNtcDwJ8pbTuXcu6PdRN9MKHH7APeAbY6yjcBt31EA9uAPeZmmlWqo3wAuJfQtrdTrmuwTqInHPHPComLdnzuFHGfeoq+IIaoQUfMJUeuf4F1sZiXxc/rsqwRorLJsjS1+yK3EmI/ELHP5RC9NFR1iZivHLnOipgx4FXx2dm6iB4QsW+lxP5ne+TSMZtTtOFxEXPCEfNmrLwLmAK+ydDeFZRjd2Vj0ujxGA6y4CPaDAndLXr0XHw8B160n990/AaafC0px+7Kxniv/x3z00n7IEs6ZjKKNmPq+46YqyLPGVH+Raxsuyg7U0fRP4iYyy1yT3mINjdkL/CCWQQ5yp93LF7eEDHjsbKjouxA1UUjN8SBzzOKnm4lusX5DwHXRY7ZeLvsXPsn4Gd7fCxy9NqhptKid4rYV0T5PPCHPc47Fi73CqwMTS+/6WjTWI5rHKu66GER2wn8nhD7rYh92hHjGjreje1RfGafAzdS2tRyK8BRx/6qi/4b6BDxT9jP45gFxYMi7liB6V0SM2LY6Eh4CD/pGD5mqiza8J7jnC7gJVNmFyYdjgv7pwTRp8W5uxPirjnqOZ2WOCobj4szD5JnMuY8lZCrqOh94txPEuLMs2GLiDV7M4kUUOgtxYfZtA2cJYANLXpOEdHTjgXUlZT4QyK2xzELWiYqG7JhLuwj08OBzXYIedgOI1865s0+G/+umYWL644/Evzfoq2yLjlVrKzotiVS0WFQ0YFQ0YFQ0YFQ0YFQ0YFQ0YFQ0YFQ0YFQ0YFQ0YGouui7wIj9cmOf3bgx3++oHVUXPeLIZ2TXjqqLftSRz3xfunZUWnRUzs1bFVR0IFR0w0Qvzy5y5O8rMBsJVm9UNnlnF1nJORsJVm/Renwakmt2kZWcs5Fg9Ratx6choS64f5VEe9VbtB6fhoT6FR7NITpYvUXr8WmID/owLEqOXrZMGTlXi8IiVbQfKjoQddxU6qeG1HGbdJQaUnXRd3XjP4zotqHc7qyil1HRbSRaX8cGcyFE6wsGCfOCQfPW2aYzFEJ0r30RalMZl//tVfZrjScaKrk/iGTRsw/bd2O08wNy3v5r3FCwnqwoiqIoiqIoiqIoihJVm/vvHy6z4PAcfwAAAABJRU5ErkJggg=="
+      />
+    </Defs>
+  </Svg>
+);
+
+export const PastQuestion = (props) => (
+  <Svg
+    width={35}
+    height={35}
+    viewBox="0 0 35 35"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    {...props}
+  >
+    <Rect width={35} height={35} fill="url(#pattern0_4686_400)" />
+    <Defs>
+      <Pattern
+        id="pattern0_4686_400"
+        patternContentUnits="objectBoundingBox"
+        width={1}
+        height={1}
+      >
+        <Use xlinkHref="#image0_4686_400" transform="scale(0.0111111)" />
+      </Pattern>
+      <Image
+        id="image0_4686_400"
+        width={90}
+        height={90}
+        preserveAspectRatio="none"
+        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFEElEQVR4nO2dz4scRRTHK5K4IglKQJNsjD8gFxXxIIjoruhBIZA/wBy8e4k/iMkESQyIYnRzNMlJQfaqkogmCCoIBtEV/JWbmoN6WOMPUKObyZr9SDE1OJl0dXd11dS86qkPzGXoevXed3peVb2qnlEqk8lkMplMJhmAq4AngE+Bc4yXLnAKuFu1CeAG4CvksQQ8rFp0J0sUuV1im3QhnaXkxTY5OQWWkhYb+AtZ/N1KsZHHbMWHfx7YrlIDYaieT+0TG2Go//1ql9gIQ13qW3vERhjqcv/aITbCUMU+pi82wlB2P9MWG2Gocl/TFRthqGp/0xQbYah6PqcnNsJQ9f1OS2yEodx8T0dshKHc/U9DbIShmsUgX2yEoZrH8WCNEuv49iCRx/QIxT4VVj0356TR8YynTOxuOOXcHZNGV4s9qjs7rHpuTk0UKgsdhyx0JLLQkchCRyILHYksdCSy0JHIQkdCutBdYI9erZlXx7xXeX0E/+v4k4zQnYJ2HZfrI8TRaYPQmwrabXS5PkIcG9sg9HRBu80u10eIY3NbU8del+sjxLG3DUJ3+6VLh8HQq9Q5qYNhm1idhY7DR3rgzHd0HL4ApnLqiMO7wOfAWeB7YB64J+foeMwBV+TBMA6vBRc7hVoHsBp4xpw4suIZ4zCvBhVbeq0D2AR8UsdJzxhHK7bHEnza5fqGvt0B/FBXFc8YRyu2VKGBW4Gfa/i2DJwAniyxtRv4GLg41Fanoh3AQkUfh1pZ66BXifupwid9EulFlw/V3ByHzIFHLfI28/61FWKveE/9pNU66A18evVWxkn9Yy4eMd8IzAy9VyX2fNP++h2kxApwAFjlFbRdizKxv/M1nhKPBVPVrscjlr4XfQ2nwlwwNe1abCuZq3/mazwF3hvJsvhSHWYqFkQHfDuQzrKe6nnEdw2wD3gd2Gmr2pmtMNsB9l+B9W0X+ohHbDcDZ4bsnbANpsDzFh9+894wkFDrAO612NELjJs8lu7fWuzOlPz+37+WNg808WPQ+NhrHcAui50PGsa0Hvi6xL8dJW31HL2I/U18GTQ89iU48IbFztMN4llbUYS6UPYtMcv1Io67+iJR6C8tdu53tDMFvF8Ry1M1Zh9FnHbxpcjw2GsdwI8WOxsc7RytiOOFGja2WNr+7uJLkeGx1zqAfyx2phzv5jKfXqlp52pbTHV9sRmWzFrH3KxrIUXM113wmA+siPNtFnqrYyzvFNg45jIH1unK4ssvjQQeMCyZGcdYrjfHCFZMGjnqen4DuG+cg+G42N0wpnVND8iUTO/ebGJv0LBkPvQKrpkeesuriGd9DUvmAnBdMBXr5efhfcU+s77GpfNyMCWrtdCnlGzVuzW+xqVzTg9ywdQs30fUm7ZFHA7RQQocG9U+odFgFfCWpW89g7mzjT89b2NXEFWLNdhv7dW3mJTgnyksA48GCfryzdiLJYPx7aE6epx0WKmqvjmmi30lImsOhuhrcG1vK1NK5W1dZfMc+Gw5uc9C8KcCzBZOamL/CTynRXOcJ8+VzC76LAK3BBV56M7eaXYnUhkgMV/9k6Ys+5AR80rz2mD2I22HHIv4A7hLTRL0ju1WHXYMyeLEidxHf4XNQz2jZmFk6SIV6KWBl8x0KzTa5sHoj8NJBrjNzDhsOykuaBvHg82TW5y7j5hijyu6zeEgy+oJSymz5sy0nhefNse39O6KfmlRv9FFe3ONPkrQuAr3H7lIW4+dlLtFAAAAAElFTkSuQmCC"
+      />
+    </Defs>
+  </Svg>
+);
+
+export const LectureNotes = (props) => (
+  <Svg
+    width={35}
+    height={35}
+    viewBox="0 0 35 35"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    {...props}
+  >
+    <Rect width={35} height={35} fill="url(#pattern0_4686_402)" />
+    <Defs>
+      <Pattern
+        id="pattern0_4686_402"
+        patternContentUnits="objectBoundingBox"
+        width={1}
+        height={1}
+      >
+        <Use xlinkHref="#image0_4686_402" transform="scale(0.0111111)" />
+      </Pattern>
+      <Image
+        id="image0_4686_402"
+        width={90}
+        height={90}
+        preserveAspectRatio="none"
+        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAACFklEQVR4nO3cwU5UQRCF4QoLjT6BiI8oLoU3YFwTE59I3MFDqCyBQEhY/eaGWUwmM4T2dtWt7j7fksyi+qSngLNoMxERERERkV7QlwfgF/AFeGuZ0K8r4JNlQd+u0txs+ndsGdC/C8uA/t1bBgzAMmAAlgEDsAwYgO0/+xvgG/AX+AOspp8p6PpBT8FuWyno+kFPN3nb9dwV8R74Dtx6H8CDx5wu5wJ+zBm2+kCFPOasfi7gAHicM2zVgf6Dx5zVz6Wgd3O5QFodcUG/A86Bmzlfw2oDFfKYM/RcwCHwFXhS0I5BbwR+QiELVDrba+Zc5FzABwUdE/QRhSxQ6WyvmXORcwGnCvqZV8Af1/tZvwzX0nUdrah2K5fqOloRGbJL19EKBd1b0OtbrdURwaPraIVlMKfraMULZy/6/GJdRyua7zpa0XzX0Yrmu45WNN91tCI0aHUdcUHrHxbvoNV17KagK9uTs1ZH60Gr64gIeh91HUFBbwSuriMoaHUdQUEP13UsYsSuI9TIXYcLdR1B1HUEUNcRREHv5rLTtTriglbXsSX0rxR1HUFBbwSuriMoaHUdQUEP13WwUNDDdR0Ufn5uwMN2HQQH3T1T0DEUdBAFvXzQ08tg235rR8e8EnamoH3evVutb7bevZvpzjKgfxeWAf37bBnQt0u3t0ZL0XfIR5YFfbkHfk7rIs1NFhERERERsWD/AB9+kpd6EO+LAAAAAElFTkSuQmCC"
+      />
+    </Defs>
+  </Svg>
+);
+
+export const UniversityCampus = (props) => (
+  <Svg
+    width={58}
+    height={43}
+    viewBox="0 0 58 43"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    {...props}
+  >
+    <Rect width={58} height={43} fill="url(#pattern0_72_20)" />
+    <Defs>
+      <Pattern
+        id="pattern0_72_20"
+        patternContentUnits="objectBoundingBox"
+        width={1}
+        height={1}
+      >
+        <Use
+          xlinkHref="#image0_72_20"
+          transform="matrix(0.00823755 0 0 0.0111111 0.12931 0)"
+        />
+      </Pattern>
+      <Image
+        id="image0_72_20"
+        width={90}
+        height={90}
+        preserveAspectRatio="none"
+        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAADDElEQVR4nO2bv08UQRTH34wKhcTEGCLcG7CholCjiUplZUJicrwXs62lrZ2UlmoHamEsUf8VO/8KQRNjKD2MImb2NghywMztcDfsfT/JJIQsjzefvP3uLD+IAAAAAAAAAADUpCWXDOsr6/S7Zd30H/vP1S0L/mEs60Pr5Jt1urNvsW5alsdExZk914NopvWGdfrxgOADSz5RSxbiv8GoM3v/onGyap38Pl7y7vpjnKzRVDE57PZPd0y4wIU4SRUToQtxkiImECcDjQmHOBlwTCjiZB9zi+OG5bV1sj14ybvZvV2+7MwtjlNTMU7fDk/w/mWcvKFGMl+MWZbOsAXvLpYfdPPROWoed8/2fbJg6RinK+TkFl2+d75c3L5dnlZYt/qU/cv3RE3EsHzoI1M/Ez+4emhR1mv+mujoYHlPjWWymDBO3wVHCEvnSMl7ZYdOdnl3yJrvhZrPUxv2wNKV0IqG5WVITf+9aZSwIVJ8JofCeidM9IhhQ6TE3N6TxQRED0L03OIFiO4BomNA2KCHoayG1qt+n4iM/p+wo5hu+aMbHUdr6bpl+QnRPYh7YTlCdlfyemg9GjVszJsc65Y/J/sjXPmA9KslC2VcBE5yvqLnizHD+sKyfImSErgxW6Nmdv2wbhgnz72zaM/+C7PdmMuzn1J2LHUneRRFW5avfYjWjew35jLrh2U9WjSiQ6NFG6fP+nsY+pyuOdknOkGuAQ/DVE2MgmhKRW4bs5n1A9GugaJT1aQhXR9bB6IrILoCE90DRIciOugQEB0ViI4e5HZutZn1Q6nIbWM2s34g2kE0YaIRHTuIDoeMxs86UoA3Q83n1JGqJg3p+tg6EF0B0RWY6B4gOjSf6MAreAIgWjHRNoM7LMUwY6IdRO/k8szARLsGik5Wk/1f8C89oZl2K7rRmXbLsi4f9V8Ayfo8/aJ1uXa/XjZEdzlUxKxOU12uFFMQXXHStyFEV0D0kDOaEtHYiY5twmYm+iT2mKxpiFaItpjoLoiOHiA6FBndqOgAAAAAAAAAAAAAoNPBX4Q3C2jo/mFbAAAAAElFTkSuQmCC"
+      />
+    </Defs>
+  </Svg>
+);
