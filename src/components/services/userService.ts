@@ -84,12 +84,13 @@ interface ActivateAccountResponse {
 }
 
 interface UserInfoResponse {
-  full_name: string;
+  status: string;
   email: string;
-  university_id: number;
+  school: string;
+  user_id: number;
   level: string;
   department: string;
-  password: string;
+  active: boolean;
 }
 
 interface Course {
@@ -153,7 +154,7 @@ interface AllAiItem {
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://108.181.189.20:8005/",
+    baseUrl: "https://unistudy.com.ng/",
   }),
   endpoints: (builder) => ({
     // listUniversities: builder.query<University[], void>({

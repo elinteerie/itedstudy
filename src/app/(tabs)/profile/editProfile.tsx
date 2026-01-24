@@ -8,8 +8,7 @@ import { useUpdateUserInfoMutation } from "../../../components/services/userServ
 import { useAppSelector, useAppDispatch } from "../../../components/redux/store";
 import Toast from "react-native-toast-message";
 import { setUserInfo } from '../../../components/redux/slices/userSlice';
-import { UpdateUserInfoRequestBody } from '../../../components/services/userService';
-import { useGetUserInfoQuery } from "../../../components/services/userService";
+import { UpdateUserInfoRequestBody, useGetUserInfoQuery } from '../../../components/services/userService';
 import { useEffect } from 'react';
 
 export default function EditProfileScreen() {
@@ -27,7 +26,7 @@ export default function EditProfileScreen() {
 
   useEffect(() => {
     if (userInfo) {
-      if (userInfo.full_name) setFullName(userInfo.full_name || ''); else if (userFromState.full_name) setFullName(userFromState.full_name || '');
+      if (userFromState.full_name) setFullName(userFromState.full_name || '');
       setEmail(userInfo.email || '');
       setDepartment(userInfo.department || '');
       setLevel(userInfo.level || '');
@@ -42,7 +41,7 @@ export default function EditProfileScreen() {
 
   const dispatch = useAppDispatch();
   const [updateUserInfo, { isLoading: updating }] = useUpdateUserInfoMutation();
-  console.log("Token in EditProfileScreen:", token, userInfo?.full_name);
+  console.log("Token in EditProfileScreen:", token);
 
   // const handleUpdate = () => {
   //   setShowModal(true);

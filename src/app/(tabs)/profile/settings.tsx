@@ -4,10 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useAppSelector } from '../../../components/redux/store';
+import { useGetUserInfoQuery } from "../../../components/services/userService";
 
 export default function SettingsScreen() {
   const [showLogoutModal, setShowLogoutModal] = React.useState(false);
   const user = useAppSelector((state) => state.user.user);
+  const token = useAppSelector((state) => state.auth.token);
+  const { data: userInfo } = useGetUserInfoQuery(token || '', {
+    skip: !token,
+  });
   const menuItems = [
     {
       icon: 'person-outline',
@@ -59,8 +64,8 @@ export default function SettingsScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.profileCard}>
           <View style={styles.profileHeader}>
-            <Text style={styles.activeLabel}>{user.activated ? 'Active' : 'Inactive'}</Text>
-            <Text style={styles.profileName}>{user.full_name || 'User'}</Text>
+            <Text style={styles.activeLabel}>{userInfo?.active || user.activated ? 'Active' : 'Inactive'}</Text>
+            <Text style={styles.profileName}>{ user.full_name || 'Guest user'}</Text>
           </View>
         </View>
 

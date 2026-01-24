@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "itedStudy",
-    "slug": "itedStudy",
-    "scheme": "itedStudy",
+    "name": "Uni E-study",
+    "slug": "uniestudy",
+    "scheme": "uniestudy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/ItedStudy.png",
@@ -23,7 +23,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.mirack.itedStudy"
+      "package": "com.mirack.uniestudy"
     },
     "web": {
       "favicon": "./assets/favicon.png"

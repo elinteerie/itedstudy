@@ -4,14 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import ProfileIcon2 from "../../assets/image/Male_User.png"
-// import Telegram from "../../assets/image/Telegram.png"
-// import Facebook from "../../assets/image/Facebook.png"
-// import Instagram from "../../assets/image/Instagram.png"
-// import Tiktok from "../../assets/image/TikTok.png"
-// import UNIAI from "../../assets/image/Uni_AI.png"
-// import CGPACalculator from "../../assets/image/Gpa_Calculator.png"
-// import PastQuestion from "../../assets/image/Quiz.png"
-// import LectureNotes from "../../assets/image/Copybook.png"
 import Updates from "../../assets/image/Updates.png"
 // import UniversityCampus from "../../assets/image/University.png"
 import {
@@ -30,6 +22,7 @@ export default function HomeScreen() {
   const { data: userInfo } = useGetUserInfoQuery(token || '', {
     skip: !token,
   });
+  console.log("User Info in HomeScreen:", userInfo);
 
   const menuItems = [
     {
@@ -82,7 +75,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.greeting}>{userName || userInfo?.full_name || 'Guest User'}</Text>
+            <Text style={styles.greeting}>{ userName || 'Guest User'}</Text>
             <View style={{ flexDirection: "row", gap: 5, justifyContent: "flex-end", alignItems: "center" }}>
               <View style={styles.smallCircle} />
 
