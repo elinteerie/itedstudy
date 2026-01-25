@@ -26,7 +26,11 @@ export default function EditProfileScreen() {
 
   useEffect(() => {
     if (userInfo) {
-      if (userFromState.full_name) setFullName(userFromState.full_name || '');
+      if (userInfo?.full_name) {
+        setFullName(userInfo.full_name || '');
+      } else if (userFromState.full_name) {
+        setFullName(userFromState.full_name || '');
+      }
       setEmail(userInfo.email || '');
       setDepartment(userInfo.department || '');
       setLevel(userInfo.level || '');
@@ -66,12 +70,12 @@ export default function EditProfileScreen() {
       const res = await updateUserInfo({ token, body: payload }).unwrap();
       console.log("Update response:", res);
 
-      // Optional: refresh user info or just update local state
+    
       dispatch(setUserInfo({
         full_name: fullName,
         level,
         department,
-        // university_id if you allow changing it
+    
       }));
 
       setShowModal(true);

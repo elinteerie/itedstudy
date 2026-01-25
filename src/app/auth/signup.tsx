@@ -45,6 +45,13 @@ export default function SignUpScreen() {
     console.log("Universities:", universities);
 
     const handleSignUp = async () => {
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            Toast.show({ type: "error", text1: "Invalid email format" });
+            return;
+        }
         if (password !== retypePassword) {
             Toast.show({ type: "error", text1: "Passwords do not match" });
             return;
@@ -112,6 +119,14 @@ export default function SignUpScreen() {
                             placeholderTextColor="#999"
                             value={fullName}
                             onChangeText={setFullName}
+                        />
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email"
+                            placeholderTextColor="#999"
+                            value={email}
+                            onChangeText={setEmail}
                         />
 
                         <View style={{ position: 'relative' }}>
@@ -225,7 +240,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         paddingHorizontal: 30,
-        paddingTop: 50,
+        paddingTop: 40,
     },
     backButton: {
         marginBottom: 5,

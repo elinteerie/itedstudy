@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import ProfileIcon2 from "../../assets/image/Male_User.png"
 import Updates from "../../assets/image/Updates.png"
-// import UniversityCampus from "../../assets/image/University.png"
+import { useAppSelector, useAppDispatch } from "../../components/redux/store";
+import { setUserInfo } from '../../components/redux/slices/userSlice';
+
 import {
   ProfileIcon, Instagram, Facebook, Telegram, Tiktok, UNIAI, CGPACalculator
   , PastQuestion, LectureNotes, UniversityCampus
 } from '../../assets/svg';
-import { useAppSelector } from "../../components/redux/store";
 import { useGetUserInfoQuery } from "../../components/services/userService";
 
 export default function HomeScreen() {
@@ -23,6 +24,21 @@ export default function HomeScreen() {
     skip: !token,
   });
   console.log("User Info in HomeScreen:", userInfo);
+
+  const dispatch = useAppDispatch();
+
+useEffect(() => {
+  if (userInfo) {
+    dispatch(setUserInfo({
+      full_name: userInfo.full_name,
+      email: userInfo.email,
+      level: userInfo.level,
+      department: userInfo.department,
+      activated: userInfo.active,
+   
+    }));
+  }
+}, [userInfo, dispatch]);
 
   const menuItems = [
     {
@@ -75,11 +91,11 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View>
-            <Text style={styles.greeting}>{ userName || 'Guest User'}</Text>
+            <Text style={styles.greeting}>{ userInfo?.full_name  || userName || 'Guest User'}</Text>
             <View style={{ flexDirection: "row", gap: 5, justifyContent: "flex-end", alignItems: "center" }}>
               <View style={styles.smallCircle} />
 
-              <Text style={{ fontSize: 10, color: "white" }}>{activationStatus ? "Active" : "Inactive"}</Text>
+              <Text style={{ fontSize: 10, color: "white" }}>{ userInfo?.active || activationStatus ? "Active" : "Inactive"}</Text>
             </View>
           </View>
 

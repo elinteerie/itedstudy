@@ -63,7 +63,7 @@ export default function VerificationScreen() {
     newCode[index] = text;
     setCode(newCode);
 
-    if (text && index < 4) {
+    if (text && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   codeInput: {
-    width: 50,
+    width: 40,
     height: 50,
     borderWidth: 2,
     borderColor: '#ddd',

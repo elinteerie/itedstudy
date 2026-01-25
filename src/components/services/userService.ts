@@ -91,6 +91,7 @@ interface UserInfoResponse {
   level: string;
   department: string;
   active: boolean;
+  full_name: string;
 }
 
 interface Course {
