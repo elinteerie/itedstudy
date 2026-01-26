@@ -74,8 +74,10 @@ export default function SettingsScreen() {
             <Text style={styles.statValue}>{userInfo?.level || user.level || '100'}</Text>
             <Text style={styles.statLabel}>LEVEL</Text>
           </View>
-          <View style={styles.stat}>
-            <Text style={styles.statValue}>{userInfo?.department || user.department || 'Null'}</Text>
+          <View style={[styles.stat, { width: "35%" }]}>
+            <Text style={[styles.statValue, { flexWrap: 'wrap', textAlign: 'center' }]}>
+              {userInfo?.department || user.department || 'Null'}
+            </Text>
             <Text style={styles.statLabel}>DEPARTMENT</Text>
           </View>
           <View style={styles.stat}>
@@ -200,16 +202,18 @@ const styles = StyleSheet.create({
   stat: {
     alignItems: 'center',
     paddingHorizontal: 10,
+    width: "30%",
+    justifyContent: 'center',
   },
   statValue: {
     color: '#00052D',
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   statLabel: {
     color: '#00052D',
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 'bold',
     opacity: 0.8,
   },

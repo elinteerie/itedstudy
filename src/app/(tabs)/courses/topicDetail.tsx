@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGetTopicContentQuery } from '../../../components/services/userService';
 import { useAppSelector } from '../../../components/redux/store';
+import Markdown from 'react-native-markdown-display';
 
 const TopicDetail = () => {
   const { topicName, topicId, courseName } = useLocalSearchParams();
@@ -41,8 +42,11 @@ const TopicDetail = () => {
         ) : (
           <View style={styles.content}>
             <Text style={styles.sectionTitle}>{topicContent?.title || topicName}</Text>
-            <Text style={styles.text}>{topicContent?.content || 'No content available.'}</Text>
+            <Markdown style={markdownStyles}>
+              {topicContent?.content || 'No content available.'}
+            </Markdown>
           </View>
+
         )}
       </ScrollView>
     </View>
@@ -60,5 +64,13 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 15 },
   text: { fontSize: 14, lineHeight: 22, color: '#333' },
 });
+
+const markdownStyles = {
+  body: { fontSize: 14, lineHeight: 22, color: '#333' },
+  heading1: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
+  heading2: { fontSize: 18, fontWeight: 'bold', marginVertical: 8 },
+  code_inline: { backgroundColor: '#f0f0f0', padding: 2, borderRadius: 3 },
+  code_block: { backgroundColor: '#f0f0f0', padding: 10, borderRadius: 5 },
+};
 
 export default TopicDetail;

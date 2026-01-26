@@ -20,12 +20,18 @@ export default function HomeScreen() {
   const userName = useAppSelector((state) => state.user.user.full_name);
   const activationStatus = useAppSelector((state) => state.user.user.activated);
 
-  const { data: userInfo } = useGetUserInfoQuery(token || '', {
+  const { data: userInfo, error: userInfoError } = useGetUserInfoQuery(token || '', {
     skip: !token,
   });
   console.log("User Info in HomeScreen:", userInfo);
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+  if (!token || userInfoError) {
+    router.replace('/auth/login');
+  }
+}, [token, userInfoError]);
 
 useEffect(() => {
   if (userInfo) {

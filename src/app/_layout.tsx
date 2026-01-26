@@ -24,7 +24,7 @@ export default function RootLayout() {
     <>
       <Provider store={store}>
         <PersistGate loading={<LoadingSpinner />} persistor={persistor}>
-         <ActivityTracker />
+          <ActivityTracker />
           <Stack
             screenOptions={{
               headerShown: false,
@@ -37,6 +37,8 @@ export default function RootLayout() {
             <Stack.Screen name="examResult" />
             <Stack.Screen name="aiDocumentAnalyzer" />
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="TopicDetail2" />
           </Stack>
           <Toast />
         </PersistGate>
