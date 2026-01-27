@@ -46,6 +46,7 @@ export default function AiDocumentScreen() {
       const file = { uri: document.uri, name: document.name, type: document.mimeType || 'application/pdf' } as any;
       const response = await summarisePdf({ token, file }).unwrap();
       setSummary(response.summary);
+      console.log('AI Analysis Response:', response);
       Toast.show({ type: 'success', text1: 'Document analyzed successfully' });
       refetchAllAi(); // Refetch to get latest AI data
     } catch (error: any) {

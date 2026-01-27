@@ -26,7 +26,7 @@ export default function AvailableCoursesScreen() {
   const handleBegin = () => {
     setShowModal(false);
     router.push({
-      pathname: '/(tabs)/exam/examScreen',
+      pathname: '/exam',
       params: { courseId: selectedCourse?.id, courseName: selectedCourse?.name, time: timeMinutes }
     });
   };
@@ -34,7 +34,7 @@ export default function AvailableCoursesScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="#000" />
@@ -54,10 +54,13 @@ export default function AvailableCoursesScreen() {
             <Text style={styles.emptySubtext}>Check back later for available courses</Text>
           </View>
         ) : (
-          courses.map((course: any) => (
+          courses.map((course: any, index: number) => (
             <TouchableOpacity
               key={course.id}
-              style={styles.courseCard}
+              style={[
+                styles.courseCard,
+                index === courses.length - 1 && { marginBottom: 60 }
+              ]}
               onPress={() => handleCourseClick(course)}
             >
               <Text style={styles.courseText}>{course.name}</Text>
@@ -86,6 +89,7 @@ export default function AvailableCoursesScreen() {
                 </Picker>
               </View>
 
+              <Text style={styles.label}>Topic</Text>
               <View style={styles.pickerContainer}>
                 <Picker selectedValue={topic} onValueChange={setTopic} style={styles.picker}>
                   <Picker.Item label="Select Topic" value="" />
@@ -136,7 +140,7 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'center', paddingHorizontal: 20 },
   modalContent: { backgroundColor: '#fff', borderRadius: 20, padding: 20 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  modalTitle: { fontSize: 18, fontWeight: 'bold' },
+  modalTitle: { fontSize: 13, fontWeight: 'bold', width: "70%"},
   label: { fontSize: 14, marginBottom: 5, marginTop: 10 },
   pickerContainer: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginBottom: 15 },
   picker: { height: 50 },

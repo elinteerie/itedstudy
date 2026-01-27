@@ -97,6 +97,9 @@ interface UserInfoResponse {
 interface Course {
   id: number;
   name: string;
+  course_code: string;
+  free: boolean;
+  image: string;
   // Add other course fields
 }
 
@@ -117,11 +120,13 @@ interface SummarisePdfResponse {
 
 interface PastQuestion {
   id: number;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-  // other fields
+  content: string;
+  option_a: string;
+  option_b: string;
+  option_c: string;
+  option_d: string;
+  correct_answer: string;
+  topic_id: number;
 }
 
 interface ListAiContentResponse {

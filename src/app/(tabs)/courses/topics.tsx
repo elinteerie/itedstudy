@@ -20,22 +20,15 @@ const Topics = () => {
                 <Text style={styles.headerTitle}>{courseName || 'Course'}</Text>
             </View>
 
-            <View style={styles.tabContainer}>
-                <TouchableOpacity
-                    style={[styles.tab, activeTab === 'Topics' && styles.activeTab]}
-                    onPress={() => setActiveTab('Topics')}
+            <View style={styles.actionContainer}>
+                <Text style={styles.sectionTitle}>Topics</Text>
+                {/* <TouchableOpacity
+                    style={styles.testButton}
+                    onPress={() => router.push({ pathname: '/(tabs)/courses/pastQuestions', params: { courseName, courseId } })}
                 >
-                    <Text style={[styles.tabText, activeTab === 'Topics' && styles.activeTabText]}>Topics</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.tab, activeTab === 'Take Test' && styles.activeTab]}
-                    onPress={() => {
-                        setActiveTab('Take Test');
-                        router.push({ pathname: '/(tabs)/courses/pastQuestions', params: { courseName, courseId } });
-                    }}
-                >
-                    <Text style={[styles.tabText, activeTab === 'Take Test' && styles.activeTabText]}>Take Test</Text>
-                </TouchableOpacity>
+                    <Text style={styles.testButtonText}>Take Test</Text>
+                    <Ionicons name="arrow-forward" size={16} color="#fff" />
+                </TouchableOpacity> */}
             </View>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -71,15 +64,39 @@ const Topics = () => {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#f5f5f5', paddingTop: 50 },
     header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 20 },
-    headerTitle: { fontSize: 18, fontWeight: 'bold', marginLeft: 15 },
+    headerTitle: { fontSize: 14, fontWeight: 'bold', marginHorizontal: 15 },
     tabContainer: { flexDirection: 'row', paddingHorizontal: 20, marginBottom: 20, gap: 10 },
-    tab: { paddingVertical: 10, paddingHorizontal: 25, borderRadius: 25, backgroundColor: '#fff', borderWidth: 1, borderColor: '#e0e0e0' },
-    activeTab: { backgroundColor: '#001f3f', borderColor: '#001f3f' },
-    tabText: { fontSize: 14, color: '#000', fontWeight: '500' },
     activeTabText: { color: '#fff' },
     scrollView: { flex: 1, paddingHorizontal: 20 },
     topicCard: { backgroundColor: '#fff', borderRadius: 10, padding: 18, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
-    topicText: { fontSize: 15, fontWeight: '600', color: '#000' },
+    topicText: { fontSize: 12, fontWeight: '600', color: '#000' },
+
+    actionContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginBottom: 20
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#000'
+    },
+    testButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#001f3f',
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        borderRadius: 20,
+        gap: 5
+    },
+    testButtonText: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '600'
+    },
 });
 
 export default Topics;

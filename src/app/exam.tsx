@@ -10,12 +10,12 @@ import Toast from 'react-native-toast-message';
 export default function ExamScreen() {
   const { courseId, courseName, time } = useLocalSearchParams();
   const token = useAppSelector((state) => state.auth.token);
-  
+
   const { data: questions = [], isLoading, error } = useGetPastQuestionsByCourseQuery(
     { token: token || '', course_id: Number(courseId) },
     { skip: !token || !courseId }
   );
-
+  const [showAnswers, setShowAnswers] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
   const [showExplanation, setShowExplanation] = useState(false);
@@ -66,20 +66,44 @@ export default function ExamScreen() {
   };
 
   const handleSubmit = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    const totalQuestions = questions.length;
-    const attempted = Object.keys(selectedAnswers).length;
-    let correct = 0;
-    
-    questions.forEach((q: any, idx: number) => {
-      if (selectedAnswers[idx] === q.correctAnswer || selectedAnswers[idx] === q.options?.[q.correctAnswer]) {
+  if (timerRef.current) clearInterval(timerRef.current);
+  const totalQuestions = questions.length;
+  const attempted = Object.keys(selectedAnswers).length;
+  let correct = 0;
+
+  questions.forEach((q: any, idx: number) => {
+    // Extract letter from correct_answer like "(C) black " -> "C"
+    const correctLetter = q.correct_answer?.match(/\(([A-D])\)/i)?.[1]?.toUpperCase();
+    // Get the letter of the selected answer
+    const selectedOption = selectedAnswers[idx];
+    if (selectedOption) {
+      const optionKeys = ['option_a', 'option_b', 'option_c', 'option_d'];
+      const selectedIndex = optionKeys.findIndex(key => q[key] === selectedOption);
+      const selectedLetter = String.fromCharCode(65 + selectedIndex); // A, B, C, D
+      if (selectedLetter === correctLetter) {
         correct++;
       }
-    });
+    }
+  });
 
-    Toast.show({ type: 'success', text1: 'Exam Submitted', text2: `Score: ${correct}/${totalQuestions}` });
-    router.back();
-  };
+  // Reset states
+  setShowAnswers(false);
+  setCurrentQuestion(0);
+  setSelectedAnswers({});
+  setTimeLeft(Number(time || 60) * 60);
+
+  router.push({
+    pathname: '/examResult',
+    params: {
+      score: correct,
+      total: totalQuestions,
+      answered: attempted,
+      correct: correct,
+      wrong: attempted - correct,
+      timeTaken: formatTime(Number(time || 60) * 60 - timeLeft)
+    }
+  });
+};
 
   if (isLoading) {
     return (
@@ -138,35 +162,47 @@ export default function ExamScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.questionCard}>
           <Text style={styles.questionNumber}>Question {currentQuestion + 1}</Text>
-          <Text style={styles.questionText}>{currentQ.question}</Text>
+          <Text style={styles.questionText}>{currentQ.content}</Text>
 
-          {(currentQ.options || []).map((option: string, index: number) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.optionButton, selectedAnswers[currentQuestion] === option && styles.optionSelected]}
-              onPress={() => handleAnswerSelect(option)}
-            >
-              <Text style={[styles.optionText, selectedAnswers[currentQuestion] === option && styles.optionTextSelected]}>
-                {String.fromCharCode(65 + index)}) {option}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {['option_a', 'option_b', 'option_c', 'option_d'].map((optionKey, index) => {
+            const option = currentQ[optionKey as keyof typeof currentQ];
+            if (!option) return null;
 
-          {/* {currentQ.topic && <Text style={styles.topicText}>{currentQ.topic}</Text>} */}
+            const isSelected = selectedAnswers[currentQuestion] === option;
 
-          {showExplanation && currentQ.explanation && (
-            <View style={styles.explanationCard}>
-              <Text style={styles.explanationTitle}>Explanation</Text>
-              <Text style={styles.explanationText}>{currentQ.explanation}</Text>
-              <TouchableOpacity onPress={() => setShowExplanation(false)}>
-                <Text style={styles.explanationFooter}>Close Explanation</Text>
+            // Extract letter from correct_answer like "(C) black " -> "C"
+            const correctLetter = currentQ.correct_answer?.match(/\(([A-D])\)/i)?.[1]?.toUpperCase();
+            const optionLetter = String.fromCharCode(65 + index); // A, B, C, D
+
+            const isCorrect = showAnswers && correctLetter === optionLetter;
+            const isWrong = showAnswers && isSelected && !isCorrect;
+
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.optionButton,
+                  isSelected && !showAnswers && styles.optionSelected,
+                  isCorrect && styles.optionCorrect,
+                  isWrong && styles.optionWrong
+                ]}
+                onPress={() => handleAnswerSelect(String(option))}
+                disabled={showAnswers}
+              >
+                <Text style={[
+                  styles.optionText,
+                  (isSelected && !showAnswers) && styles.optionTextSelected,
+                  (isCorrect || isWrong) && styles.optionTextSelected
+                ]}>
+                  {String.fromCharCode(65 + index)}) {option}
+                </Text>
               </TouchableOpacity>
-            </View>
-          )}
+            );
+          })}
 
-          {!showExplanation && currentQ.explanation && (
-            <TouchableOpacity onPress={() => setShowExplanation(true)}>
-              <Text style={styles.showExplanation}>Show Explanation</Text>
+          {!showAnswers && (
+            <TouchableOpacity style={styles.checkAnswerBtn} onPress={() => setShowAnswers(true)}>
+              <Text style={styles.checkAnswerText}>Check Answer</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -200,7 +236,7 @@ export default function ExamScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: 50 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 15 },
-  headerTitle: { fontSize: 18, fontWeight: 'bold' },
+  headerTitle: { fontSize: 14, fontWeight: 'bold', width: '60%' },
   submitButton: { backgroundColor: '#001f3f', paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20 },
   submitText: { color: '#fff', fontSize: 14, fontWeight: '600' },
   progressContainer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 20 },
@@ -219,11 +255,6 @@ const styles = StyleSheet.create({
   optionText: { fontSize: 14 },
   optionTextSelected: { color: '#fff' },
   topicText: { fontSize: 12, color: '#666', textAlign: 'center', marginTop: 15 },
-  explanationCard: { backgroundColor: '#f5f5f5', borderRadius: 10, padding: 15, marginTop: 15 },
-  explanationTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 10 },
-  explanationText: { fontSize: 14, lineHeight: 20, marginBottom: 10 },
-  explanationFooter: { fontSize: 12, color: '#666', textAlign: 'center' },
-  showExplanation: { fontSize: 14, color: '#4169E1', textAlign: 'center', marginTop: 15 },
   navigationButtons: { flexDirection: 'row', gap: 10, marginBottom: 20 },
   navButton: { flex: 1, borderWidth: 1, borderColor: '#001f3f', borderRadius: 25, padding: 15, alignItems: 'center' },
   navButtonPrimary: { flex: 1, backgroundColor: '#001f3f', borderRadius: 25, padding: 15, alignItems: 'center' },
@@ -240,4 +271,10 @@ const styles = StyleSheet.create({
   emptySubtext: { fontSize: 14, color: '#999', marginTop: 8, textAlign: 'center' },
   backBtn: { backgroundColor: '#001f3f', paddingHorizontal: 30, paddingVertical: 12, borderRadius: 25, marginTop: 20 },
   backBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+
+  optionCorrect: { backgroundColor: '#4CAF50', borderColor: '#4CAF50' },
+  optionWrong: { backgroundColor: '#FF0000', borderColor: '#FF0000' },
+  optionTextCorrect: { color: '#fff' },
+  checkAnswerBtn: { backgroundColor: '#001f3f', borderRadius: 25, padding: 12, alignItems: 'center', marginTop: 15 },
+  checkAnswerText: { color: '#fff', fontSize: 14, fontWeight: '600' },
 });

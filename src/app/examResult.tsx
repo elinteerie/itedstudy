@@ -1,33 +1,25 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 export default function ExamResultScreen() {
-  const score = 20;
-  const total = 50;
-  const answered = 50;
-  const wrongAnswers = 30;
-  const correctAnswers = 20;
+  const { score, total, answered, correct, wrong, timeTaken } = useLocalSearchParams();
 
-  const topics = [
-    'Religious of mission',
-    'A Human Science',
-    'B Atomic',
-  ];
+
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.replace('/(tabs)/home')}>
           <Ionicons name="chevron-back" size={24} color="#000" />
         </TouchableOpacity>
         <View style={styles.timerContainer}>
           <Ionicons name="time-outline" size={20} color="#000" />
-          <Text style={styles.timerText}>58:35</Text>
+          <Text style={styles.timerText}>{timeTaken || '00:00'}</Text>
         </View>
       </View>
 
@@ -47,24 +39,16 @@ export default function ExamResultScreen() {
             </View>
             <View style={styles.statRow}>
               <View style={[styles.dot, styles.dotRed]} />
-              <Text style={styles.statText}>{wrongAnswers} Answered wrongly</Text>
+              <Text style={styles.statText}>{wrong} Answered wrongly</Text>
             </View>
             <View style={styles.statRow}>
               <View style={[styles.dot, styles.dotGreen]} />
-              <Text style={styles.statText}>{correctAnswers} Answered correctly</Text>
+              <Text style={styles.statText}>{correct} Answered correctly</Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.topicsSection}>
-          <Text style={styles.topicsTitle}>Topics to focus on</Text>
-          {topics.map((topic, index) => (
-            <View key={index} style={styles.topicItem}>
-              <Text style={styles.topicNumber}>{index + 1}.</Text>
-              <Text style={styles.topicText}>{topic}</Text>
-            </View>
-          ))}
-        </View>
+  
       </ScrollView>
     </View>
   );
@@ -157,32 +141,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#000',
   },
-  topicsSection: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  topicsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  topicItem: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 10,
-  },
-  topicNumber: {
-    fontSize: 14,
-    color: '#666',
-  },
-  topicText: {
-    fontSize: 14,
-    color: '#666',
-  },
+
+
 });

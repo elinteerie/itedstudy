@@ -20,9 +20,10 @@ const TopicDetail = () => {
         <Text style={styles.headerTitle}>{topicName || 'Topic'}</Text>
         <TouchableOpacity
           style={styles.pastQBtn}
+       
           onPress={() => router.push({
             pathname: '/(tabs)/courses/pastQuestions',
-            params: { topicId, topicName, courseName, fromTopic: 'true' }
+            params: { topicId, topicName, fromTopic: 'true' }
           })}
         >
           <Text style={styles.pastQText}>Past Questions</Text>
@@ -55,8 +56,8 @@ const TopicDetail = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5', paddingTop: 50 },
-  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 20 },
-  headerTitle: { fontSize: 18, fontWeight: 'bold', marginLeft: 15, flex: 1 },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10 },
+  headerTitle: { fontSize: 14, fontWeight: 'bold', marginLeft: 15, flex: 1, marginRight: 18 },
   pastQBtn: { backgroundColor: '#001f3f', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 15 },
   pastQText: { color: '#fff', fontSize: 12, fontWeight: '600' },
   scrollView: { flex: 1 },

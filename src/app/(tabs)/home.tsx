@@ -23,7 +23,7 @@ export default function HomeScreen() {
   const { data: userInfo, error: userInfoError } = useGetUserInfoQuery(token || '', {
     skip: !token,
   });
-  console.log("User Info in HomeScreen:", userInfo);
+  console.log("User Info in HomeScreen:", userInfo, token);
 
   const dispatch = useAppDispatch();
 
