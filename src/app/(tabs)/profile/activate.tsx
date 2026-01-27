@@ -15,7 +15,8 @@ export default function ActivateAppScreen() {
     const [activateAccount, { isLoading }] = useActivateAccountMutation();
 
     const handleActivate = async () => {
-        if (!activationCode || activationCode.length < 15) {
+        console.log('Activation Code:', activationCode);
+        if (!activationCode) {
             Toast.show({ type: 'error', text1: 'Please enter a valid 15-digit activation code' });
             return;
         }
@@ -46,7 +47,7 @@ export default function ActivateAppScreen() {
                 <Text style={styles.subtitle}>access full app features</Text>
 
                 <View style={styles.form}>
-                    <Text style={styles.label}>Enter your 15 digit activation code to access full app features</Text>
+                    <Text style={styles.label}>Enter your activation code to access full app features</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Activation Code"
