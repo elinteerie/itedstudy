@@ -82,38 +82,38 @@ export default function AvailableCoursesScreen() {
 
               <Text style={styles.label}>Exam type</Text>
               <View style={styles.pickerContainer}>
-                <Picker selectedValue={examType} onValueChange={setExamType} style={styles.picker}>
-                  <Picker.Item label="Select type" value="" />
-                  <Picker.Item label="Quiz" value="quiz" />
-                  <Picker.Item label="Exam" value="exam" />
+                <Picker selectedValue={examType} onValueChange={setExamType} style={[styles.picker, { color: '#000' }]}>
+                  <Picker.Item label="Select type" value=""  color="#000" />
+                  <Picker.Item label="Quiz" value="quiz" color="#000" />
+                  <Picker.Item label="Exam" value="exam" color="#000" />
                 </Picker>
               </View>
 
               <Text style={styles.label}>Topic</Text>
               <View style={styles.pickerContainer}>
-                <Picker selectedValue={topic} onValueChange={setTopic} style={styles.picker}>
-                  <Picker.Item label="Select Topic" value="" />
-                  <Picker.Item label="All Topics" value="all" />
+                <Picker selectedValue={topic} onValueChange={setTopic} style={[styles.picker, { color: '#000' }]}>
+                  <Picker.Item label="Select Topic" value="" color="#000" />
+                  <Picker.Item label="All Topics" value="all" color="#000" />
                 </Picker>
               </View>
 
               <Text style={styles.label}>Exam Year</Text>
               <View style={styles.pickerContainer}>
-                <Picker selectedValue={year} onValueChange={setYear} style={styles.picker}>
-                  <Picker.Item label="Select Year" value="" />
-                  <Picker.Item label="2023" value="2023" />
-                  <Picker.Item label="2024" value="2024" />
-                  <Picker.Item label="2025" value="2025" />
+                <Picker selectedValue={year} onValueChange={setYear} style={[styles.picker, { color: '#000' }]}>
+                  <Picker.Item label="Select Year" value="" color="#000" />
+                  <Picker.Item label="2023" value="2023" color="#000" />
+                  <Picker.Item label="2024" value="2024" color="#000" />
+                  <Picker.Item label="2025" value="2025" color="#000" />
                 </Picker>
               </View>
 
               <Text style={styles.label}>Time in Minutes</Text>
               <View style={styles.pickerContainer}>
-                <Picker selectedValue={timeMinutes} onValueChange={setTimeMinutes} style={styles.picker}>
-                  <Picker.Item label="30 minutes" value="30" />
-                  <Picker.Item label="60 minutes" value="60" />
-                  <Picker.Item label="90 minutes" value="90" />
-                  <Picker.Item label="120 minutes" value="120" />
+                <Picker selectedValue={timeMinutes} onValueChange={setTimeMinutes} style={[styles.picker, { color: '#000' }]} >
+                  <Picker.Item label="30 minutes" value="30" color="#000" />
+                  <Picker.Item label="60 minutes" value="60" color="#000" />
+                  <Picker.Item label="90 minutes" value="90" color="#000" />
+                  <Picker.Item label="120 minutes" value="120" color="#000" />
                 </Picker>
               </View>
 

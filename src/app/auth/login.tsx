@@ -46,70 +46,73 @@ export default function LoginScreen() {
     };
 
     return (
-      
+
         <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-        > 
-          <StatusBar style="dark" />
-        <View style={styles.container}>
-          
+        >
+            <StatusBar style="dark" />
+            <View style={styles.container}>
 
-            <Text style={styles.title}>Log In</Text>
-            <Text style={styles.subtitle}>Enter your details to log in</Text>
 
-            <View style={styles.form}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    placeholderTextColor="#999"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
+                <Text style={styles.title}>Log In</Text>
+                <Text style={styles.subtitle}>Enter your details to log in</Text>
 
-                <View style={{ position: 'relative' }}>
+                <View style={styles.form}>
                     <TextInput
-                        style={styles.input}
-                        placeholder="Password"
+                        style={[styles.input, { color: '#000' }]}
+                        placeholder="Email"
                         placeholderTextColor="#999"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={!showPassword}
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
                     />
+
+                    <View style={{ position: 'relative' }}>
+                        <TextInput
+                            style={[styles.input, { color: '#000' }]}
+                            placeholder="Password"
+                            placeholderTextColor="#999"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword}
+                            textContentType="none"
+                            autoCorrect={false}
+                            autoComplete="off"
+                        />
+                        <TouchableOpacity
+                            style={styles.eyeIcon}
+                            onPress={() => setShowPassword(!showPassword)}
+                        >
+                            <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#666" />
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity onPress={() => router.push('/(tabs)/profile/changePassword')}>
+                        <Text style={styles.forgotPassword}>Forgotten Password?</Text>
+                    </TouchableOpacity>
+
+
                     <TouchableOpacity
-                        style={styles.eyeIcon}
-                        onPress={() => setShowPassword(!showPassword)}
+                        style={styles.button}
+                        onPress={handleLogin}
+                        disabled={isLoading}
                     >
-                        <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#666" />
+                        <Text style={styles.buttonText}>
+                            {isLoading ? "Logging in..." : "Log In"}
+                        </Text>
                     </TouchableOpacity>
+
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>Don't have an account? </Text>
+
+                        <TouchableOpacity onPress={() => router.push('/auth/signup')}>
+                            <Text style={styles.signUpText}>Sign Up!</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-
-                <TouchableOpacity onPress={() => router.push('/(tabs)/profile/changePassword')}>
-                    <Text style={styles.forgotPassword}>Forgotten Password?</Text>
-                </TouchableOpacity>
-
-
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleLogin}
-                    disabled={isLoading}
-                >
-                    <Text style={styles.buttonText}>
-                        {isLoading ? "Logging in..." : "Log In"}
-                    </Text>
-                </TouchableOpacity>
-
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>Don't have an account? </Text>
-
-                    <TouchableOpacity onPress={() => router.push('/auth/signup')}>
-                        <Text style={styles.signUpText}>Sign Up!</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
             </View>
         </KeyboardAvoidingView>
     );

@@ -131,12 +131,15 @@ export default function SignUpScreen() {
 
                         <View style={{ position: 'relative' }}>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { color: '#000' }]}
                                 placeholder="Password"
                                 placeholderTextColor="#999"
                                 value={password}
                                 onChangeText={setPassword}
                                 secureTextEntry={!showPassword}
+                                textContentType="none"
+                                autoCorrect={false}
+                                autoComplete="off"
                             />
                             <TouchableOpacity
                                 style={styles.eyeIcon}
@@ -148,12 +151,15 @@ export default function SignUpScreen() {
 
                         <View style={{ position: 'relative' }}>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { color: '#000' }]}
                                 placeholder="Retype Password"
                                 placeholderTextColor="#999"
                                 value={retypePassword}
                                 onChangeText={setRetypePassword}
                                 secureTextEntry={!showRetypePassword}
+                                 textContentType="none"
+                                autoCorrect={false}
+                                autoComplete="off"
                             />
                             <TouchableOpacity
                                 style={styles.eyeIcon}
