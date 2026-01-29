@@ -8,7 +8,61 @@ import MathImage from "../../../assets/image/Maths.png";
 import ChemImage from "../../../assets/image/Chem.png";
 import BioImage from "../../../assets/image/Bio.png";
 import PhyImage from "../../../assets/image/Physics.png";
-import { Picker } from '@react-native-picker/picker';
+
+// Custom Dropdown Component (ADD THIS: Copied from availableCourses.tsx)
+const CustomDropdown = ({ label, value, options, onSelect, id }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [buttonLayout, setButtonLayout] = useState({ y: 0, height: 0 });
+
+  const selectedLabel = options.find((o: any) => o.value === value)?.label || options[0]?.label;
+
+  return (
+    <View style={styles.dropdownContainer}>
+      <Text style={styles.label}>{label}</Text>
+
+      <TouchableOpacity
+        style={styles.dropdownButton}
+        onPress={() => setIsOpen(!isOpen)}
+        activeOpacity={0.8}
+        onLayout={(event) => {
+          const { y, height } = event.nativeEvent.layout;
+          setButtonLayout({ y, height });
+        }}
+      >
+        <Text style={styles.dropdownText} numberOfLines={1}>
+          {selectedLabel}
+        </Text>
+        <Ionicons
+          name={isOpen ? "chevron-up" : "chevron-down"}
+          size={20}
+          color="#666"
+        />
+      </TouchableOpacity>
+
+      {isOpen && (
+        <View style={styles.dropdownList}>
+          <ScrollView style={{ maxHeight: 220 }} nestedScrollEnabled>
+            {options.map((option: any) => (
+              <TouchableOpacity
+                key={option.value}
+                style={[
+                  styles.dropdownItem,
+                  option.value === value && styles.dropdownItemSelected,
+                ]}
+                onPress={() => {
+                  onSelect(option.value);
+                  setIsOpen(false);
+                }}
+              >
+                <Text style={styles.dropdownItemText}>{option.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
+    </View>
+  );
+};
 
 const defaultImages: { [key: string]: any } = {
   'Mathematics': MathImage,
@@ -28,6 +82,32 @@ const Index = () => {
   const [topic, setTopic] = useState('');
   const [year, setYear] = useState('');
   const [timeMinutes, setTimeMinutes] = useState('60');
+
+  // ADD THESE: Options arrays from availableCourses.tsx
+  const examTypeOptions = [
+    { label: 'Select type', value: '' },
+    { label: 'Quiz', value: 'quiz' },
+    { label: 'Exam', value: 'exam' }
+  ];
+
+  const topicOptions = [
+    { label: 'Select Topic', value: '' },
+    { label: 'All Topics', value: 'all' }
+  ];
+
+  const yearOptions = [
+    { label: 'Select Year', value: '' },
+    { label: '2023', value: '2023' },
+    { label: '2024', value: '2024' },
+    { label: '2025', value: '2025' }
+  ];
+
+  const timeOptions = [
+    { label: '30 minutes', value: '30' },
+    { label: '60 minutes', value: '60' },
+    { label: '90 minutes', value: '90' },
+    { label: '120 minutes', value: '120' }
+  ];
 
   const handleBegin = () => {
     setShowModal(false);
@@ -62,7 +142,6 @@ const Index = () => {
           <Text style={[styles.tabText, activeTab === 'Past Questions' && styles.activeTabText]}>Past Questions</Text>
         </TouchableOpacity>
       </View>
-
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {isLoading ? (
@@ -109,7 +188,6 @@ const Index = () => {
           ))
         )}
 
-
         <Modal visible={showModal} transparent animationType="fade" onRequestClose={() => setShowModal(false)}>
           <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowModal(false)}>
             <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()}>
@@ -121,42 +199,40 @@ const Index = () => {
                   </TouchableOpacity>
                 </View>
 
-                <Text style={styles.label}>Exam type</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker selectedValue={examType} onValueChange={setExamType} style={styles.picker}>
-                    <Picker.Item label="Select type" value="" />
-                    <Picker.Item label="Quiz" value="quiz" />
-                    <Picker.Item label="Exam" value="exam" />
-                  </Picker>
-                </View>
+                {/* MODIFY THIS: Replace all Picker sections with CustomDropdown */}
+                <ScrollView style={styles.modalScroll}>
+                  <CustomDropdown
+                    id="examType"
+                    label="Exam type"
+                    value={examType}
+                    options={examTypeOptions}
+                    onSelect={setExamType}
+                  />
 
-                <Text style={styles.label}>Topic</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker selectedValue={topic} onValueChange={setTopic} style={styles.picker}>
-                    <Picker.Item label="Select Topic" value="" />
-                    <Picker.Item label="All Topics" value="all" />
-                  </Picker>
-                </View>
+                  <CustomDropdown
+                    id="topic"
+                    label="Topic"
+                    value={topic}
+                    options={topicOptions}
+                    onSelect={setTopic}
+                  />
 
-                <Text style={styles.label}>Exam Year</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker selectedValue={year} onValueChange={setYear} style={styles.picker}>
-                    <Picker.Item label="Select Year" value="" />
-                    <Picker.Item label="2023" value="2023" />
-                    <Picker.Item label="2024" value="2024" />
-                    <Picker.Item label="2025" value="2025" />
-                  </Picker>
-                </View>
+                  <CustomDropdown
+                    id="year"
+                    label="Exam Year"
+                    value={year}
+                    options={yearOptions}
+                    onSelect={setYear}
+                  />
 
-                <Text style={styles.label}>Time in Minutes</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker selectedValue={timeMinutes} onValueChange={setTimeMinutes} style={styles.picker}>
-                    <Picker.Item label="30 minutes" value="30" />
-                    <Picker.Item label="60 minutes" value="60" />
-                    <Picker.Item label="90 minutes" value="90" />
-                    <Picker.Item label="120 minutes" value="120" />
-                  </Picker>
-                </View>
+                  <CustomDropdown
+                    id="time"
+                    label="Time in Minutes"
+                    value={timeMinutes}
+                    options={timeOptions}
+                    onSelect={setTimeMinutes}
+                  />
+                </ScrollView>
 
                 <TouchableOpacity style={styles.beginButton} onPress={handleBegin}>
                   <Text style={styles.beginText}>Begin</Text>
@@ -188,15 +264,67 @@ const styles = StyleSheet.create({
   iconContainer: { justifyContent: 'space-around', alignItems: 'center' },
   iconBtn: { marginBottom: 10 },
 
-    modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'center', paddingHorizontal: 20 },
-  modalContent: { backgroundColor: '#fff', borderRadius: 20, padding: 20 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'center', paddingHorizontal: 20 },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    maxHeight: '85%',
+  },
+  modalScroll: {},
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
   modalTitle: { fontSize: 13, fontWeight: 'bold', width: "70%"},
   label: { fontSize: 14, marginBottom: 5, marginTop: 10 },
-  pickerContainer: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginBottom: 15 },
-  picker: { height: 50 },
   beginButton: { backgroundColor: '#001f3f', borderRadius: 25, padding: 15, alignItems: 'center', marginTop: 10 },
   beginText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+
+  // ADD THESE: Custom Dropdown Styles from availableCourses.tsx
+  dropdownContainer: {
+    marginBottom: 20,
+    position: 'relative',
+  },
+  dropdownButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: '#fff',
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: '#000',
+    flex: 1,
+  },
+  dropdownList: {
+    marginTop: 4,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  dropdownItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  dropdownItemSelected: {
+    backgroundColor: '#f0f8ff',
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: '#000',
+  },
 });
 
 export default Index;
