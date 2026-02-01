@@ -4,7 +4,33 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGetTopicContentQuery } from '../../../components/services/userService';
 import { useAppSelector } from '../../../components/redux/store';
+import { MathJaxSvg } from 'react-native-mathjax-html-to-svg';
 import Markdown from 'react-native-markdown-display';
+
+// Add this function before your component
+const renderMixedContent = (content: string) => {
+  // Split by math delimiters ($$...$$ for block, $...$ for inline)
+  const parts = content.split(/(\$\$[\s\S]*?\$\$|\$[^$]+\$)/g);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('$$') && part.endsWith('$$')) {
+      return (
+        <MathJaxSvg key={index} fontSize={14} color="#333" fontCache style={{ marginVertical: 10 }}>
+          {part}
+        </MathJaxSvg>
+      );
+    } else if (part.startsWith('$') && part.endsWith('$')) {
+      return (
+        <MathJaxSvg key={index} fontSize={14} color="#333" fontCache>
+          {part}
+        </MathJaxSvg>
+      );
+    } else if (part.trim()) {
+      return <Markdown key={index} style={markdownStyles}>{part}</Markdown>;
+    }
+    return null;
+  });
+};
 
 const TopicDetail = () => {
   const { topicName, topicId, courseName } = useLocalSearchParams();
@@ -20,7 +46,6 @@ const TopicDetail = () => {
         <Text style={styles.headerTitle}>{topicName || 'Topic'}</Text>
         <TouchableOpacity
           style={styles.pastQBtn}
-       
           onPress={() => router.push({
             pathname: '/(tabs)/courses/pastQuestions',
             params: { topicId, topicName, fromTopic: 'true' }
@@ -29,7 +54,6 @@ const TopicDetail = () => {
           <Text style={styles.pastQText}>Past Questions</Text>
         </TouchableOpacity>
       </View>
-
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {isLoading ? (
           <ActivityIndicator size="large" color="#001f3f" style={{ marginTop: 50 }} />
@@ -43,11 +67,10 @@ const TopicDetail = () => {
         ) : (
           <View style={styles.content}>
             <Text style={styles.sectionTitle}>{topicContent?.title || topicName}</Text>
-            <Markdown style={markdownStyles}>
-              {topicContent?.content || 'No content available.'}
-            </Markdown>
-          </View>
+            {renderMixedContent(topicContent?.content || '')}
 
+
+          </View>
         )}
       </ScrollView>
     </View>
@@ -63,15 +86,16 @@ const styles = StyleSheet.create({
   scrollView: { flex: 1 },
   content: { backgroundColor: '#fff', margin: 20, padding: 20, borderRadius: 15 },
   sectionTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 15 },
-  text: { fontSize: 14, lineHeight: 22, color: '#333' },
+  mathContent: { fontSize: 14, color: '#333' },
 });
 
 const markdownStyles = {
   body: { fontSize: 14, lineHeight: 22, color: '#333' },
   heading1: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
   heading2: { fontSize: 18, fontWeight: 'bold', marginVertical: 8 },
-  code_inline: { backgroundColor: '#f0f0f0', padding: 2, borderRadius: 3 },
-  code_block: { backgroundColor: '#f0f0f0', padding: 10, borderRadius: 5 },
+  heading3: { fontSize: 16, fontWeight: 'bold', marginVertical: 6 },
+  paragraph: { marginVertical: 4 },
+  hr: { backgroundColor: '#ccc', height: 1, marginVertical: 10 },
 };
 
 export default TopicDetail;
