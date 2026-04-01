@@ -79,8 +79,8 @@ export default function ActivateAppScreen() {
                         <Text style={styles.bankTitle}>Pay Through Bank Transfer</Text>
                         <View style={styles.detailRow}><Text style={styles.detailLabel}>Amount:</Text><Text style={styles.detailValue}>N2500</Text></View>
                         <View style={styles.detailRow}><Text style={styles.detailLabel}>Bank Name:</Text><Text style={styles.detailValue}>Opay</Text></View>
-                        <View style={styles.detailRow}><Text style={styles.detailLabel}>Account Number:</Text><Text style={styles.detailValue}>8188604438</Text></View>
-                        <View style={styles.detailRow}><Text style={styles.detailLabel}>Account Name:</Text><Text style={styles.detailValue}>Ited Edu</Text></View>
+                        <View style={styles.detailRow}><Text style={styles.detailLabel}>Account Number:</Text><Text style={styles.detailValue}>8156604439</Text></View>
+                        <View style={styles.detailRow}><Text style={styles.detailLabel}>Account Name:</Text><Text style={styles.detailValue}>Ogbonnaya Daniel Kalu</Text></View>
                     </View>
                 </View>
             </ScrollView>
