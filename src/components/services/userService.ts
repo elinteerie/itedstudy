@@ -7,12 +7,29 @@ interface University {
   id: number;
 }
 
+export interface Level {
+  id: number;
+  value: number;
+  university_id: number;
+}
+
+export interface Department {
+  id: number;
+  name: string;
+  university_id: number;
+}
+
+interface ListResponse<T> {
+  value: T[];
+  Count: number;
+}
+
 export interface CreateUserRequestBody {
   full_name: string;
   email: string;
   university_id: number;
-  level: string;
-  department: string;
+  level: number;
+  department: number;
   password: string;
 }
 
@@ -177,6 +194,16 @@ export const userApi = createApi({
         url: `auth/list-uni`,
         method: "POST",
       }),
+    }),
+
+    listLevels: builder.query<Level[], void>({
+      query: () => ({ url: "auth/list-levels", method: "POST" }),
+      transformResponse: (response: ListResponse<Level>) => response.value || [],
+    }),
+
+    listDepartments: builder.query<Department[], void>({
+      query: () => ({ url: "auth/list-depts", method: "POST" }),
+      transformResponse: (response: ListResponse<Department>) => response.value || [],
     }),
 
     createUser: builder.mutation<CreateUserResponse, CreateUserRequestBody>({
@@ -376,6 +403,8 @@ export const userApi = createApi({
 
 export const {
   useListUniversitiesQuery,
+  useListLevelsQuery,
+  useListDepartmentsQuery,
   useCreateUserMutation,
   useLoginMutation,
   useResendOtpMutation,

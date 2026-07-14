@@ -135,7 +135,7 @@ useEffect(() => {
           <View key={index} style={[styles.card, { backgroundColor: card.color }]}>
             <View style={styles.cardHeader}>
               <Text style={styles.cardTitle}>{card.title}</Text>
-              <Text style={styles.seeMore}>See more ></Text>
+              <Text style={styles.seeMore}>{'See more >'}</Text>
             </View>
             <Text style={styles.cardSubtitle}>{card.subtitle}</Text>
             {card.tags && (

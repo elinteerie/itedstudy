@@ -18,6 +18,8 @@ import {
     useCreateUserMutation,
     useResendOtpMutation,
     useListUniversitiesQuery,
+    useListLevelsQuery,
+    useListDepartmentsQuery,
 } from "../../components/services/userService";
 import { useAppDispatch } from "../../components/redux/store";
 import { loginUser, updateExpires } from "../../components/redux/slices/authSlice";
@@ -42,7 +44,11 @@ export default function SignUpScreen() {
 
     // const { data: universities = [], isLoading: loadingUnis, error } = useListUniversitiesQuery();
     const { data: universities = [], isLoading: loadingUnis, error } = useListUniversitiesQuery();
-    console.log("Universities:", universities);
+    const { data: levels = [], isLoading: loadingLevels, error: levelsError } = useListLevelsQuery();
+    const { data: departments = [], isLoading: loadingDepartments, error: departmentsError } = useListDepartmentsQuery();
+    const universityId = Number(institution);
+    const availableLevels = levels.filter((item) => item.university_id === universityId);
+    const availableDepartments = departments.filter((item) => item.university_id === universityId);
 
     const handleSignUp = async () => {
 
@@ -67,8 +73,8 @@ export default function SignUpScreen() {
                 full_name: fullName,
                 email,
                 university_id: Number(institution),   // convert to number
-                level,
-                department,
+                level: Number(level),
+                department: Number(department),
                 password,
             };
 
@@ -178,7 +184,11 @@ export default function SignUpScreen() {
                             ) : (
                                 <Picker
                                     selectedValue={institution}
-                                    onValueChange={(value) => setInstitution(value)}
+                                    onValueChange={(value) => {
+                                        setInstitution(value);
+                                        setLevel('');
+                                        setDepartment('');
+                                    }}
                                     style={styles.picker}
                                 >
                                     <Picker.Item label="Select University" value="" />
@@ -193,21 +203,27 @@ export default function SignUpScreen() {
                             )}
                         </View>
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Level"
-                            placeholderTextColor="#999"
-                            value={level}
-                            onChangeText={setLevel}
-                        />
+                        <View style={styles.pickerContainer}>
+                            {loadingLevels ? <ActivityIndicator size="small" color="#001f3f" style={{ padding: 15 }} /> : levelsError ? (
+                                <Text style={{ color: 'red', padding: 15 }}>Failed to load levels</Text>
+                            ) : (
+                                <Picker selectedValue={level} onValueChange={setLevel} style={styles.picker} enabled={!!institution}>
+                                    <Picker.Item label="Select Level" value="" />
+                                    {availableLevels.map((item) => <Picker.Item key={item.id} label={`${item.value} Level`} value={item.id.toString()} />)}
+                                </Picker>
+                            )}
+                        </View>
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Department"
-                            placeholderTextColor="#999"
-                            value={department}
-                            onChangeText={setDepartment}
-                        />
+                        <View style={styles.pickerContainer}>
+                            {loadingDepartments ? <ActivityIndicator size="small" color="#001f3f" style={{ padding: 15 }} /> : departmentsError ? (
+                                <Text style={{ color: 'red', padding: 15 }}>Failed to load departments</Text>
+                            ) : (
+                                <Picker selectedValue={department} onValueChange={setDepartment} style={styles.picker} enabled={!!institution}>
+                                    <Picker.Item label="Select Department" value="" />
+                                    {availableDepartments.map((item) => <Picker.Item key={item.id} label={item.name} value={item.id.toString()} />)}
+                                </Picker>
+                            )}
+                        </View>
 
 
 
@@ -216,7 +232,7 @@ export default function SignUpScreen() {
                         <TouchableOpacity
                             style={styles.button}
                             onPress={handleSignUp}
-                            disabled={creating || resending || loadingUnis || !institution}
+                            disabled={creating || resending || loadingUnis || loadingLevels || loadingDepartments || !institution || !level || !department}
                         >
                             <View style={styles.buttonContent}>
                                 <View style={styles.checkCircle}>
