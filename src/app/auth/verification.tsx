@@ -19,6 +19,7 @@ export default function VerificationScreen() {
 
 
   const handleSubmit = async () => {
+    if (verifying || resending) return;
     const otp = code.join("").trim();
     if (otp.length !== 6) {
       Toast.show({ type: "error", text1: "Enter complete code" });
@@ -44,6 +45,7 @@ export default function VerificationScreen() {
   };
 
   const handleResend = async () => {
+    if (verifying || resending) return;
     if (!email) return;
 
     try {
@@ -124,7 +126,7 @@ export default function VerificationScreen() {
       <TouchableOpacity
         style={styles.resendButton}
         onPress={handleResend}
-        disabled={resending || !email}
+        disabled={verifying || resending || !email}
       >
         <Text style={styles.resendText}>{resending ? "Sending..." : "Resend"}</Text>
       </TouchableOpacity>
@@ -132,7 +134,7 @@ export default function VerificationScreen() {
       <TouchableOpacity
         style={styles.submitButton}
         onPress={handleSubmit}
-        disabled={verifying || !email}
+        disabled={verifying || resending || !email}
       >
         <Text style={styles.submitText}>{verifying ? "Verifying..." : "Submit"}</Text>
       </TouchableOpacity>

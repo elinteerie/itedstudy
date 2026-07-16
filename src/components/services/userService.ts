@@ -105,8 +105,8 @@ interface UserInfoResponse {
   email: string;
   school: string;
   user_id: number;
-  level: string;
-  department: string;
+  level: string | Level;
+  department: string | Department;
   active: boolean;
   full_name: string;
 }

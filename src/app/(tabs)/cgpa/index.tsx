@@ -88,18 +88,12 @@ useFocusEffect(
               onPress={() => setSemester('first')}
             >
               <Text style={[styles.semesterText, semester === 'first' && styles.semesterTextActive]}>First semester</Text>
-              <View style={[styles.badge, semester === 'first' && styles.badgeActive]}>
-                <Text style={[styles.badgeText, semester === 'first' && styles.badgeTextActive]}>(0.00)</Text>
-              </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.semesterButton, semester === 'second' && styles.semesterButtonActive]}
               onPress={() => setSemester('second')}
             >
               <Text style={[styles.semesterText, semester === 'second' && styles.semesterTextActive]}>Second semester</Text>
-              <View style={[styles.badge, semester === 'second' && styles.badgeActive]}>
-                <Text style={[styles.badgeText, semester === 'second' && styles.badgeTextActive]}>(0.00)</Text>
-              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -122,9 +116,14 @@ useFocusEffect(
                   <Text style={styles.recordDetails}>1st: {level.firstGPA} | 2nd: {level.secondGPA}</Text>
                   <Text style={styles.recordCgpa}>CGPA: {level.cgpa}</Text>
                 </View>
-                <TouchableOpacity onPress={() => deleteLevel(level.id)} style={styles.deleteBtn}>
-                  <Ionicons name="trash-outline" size={22} color="#ff4444" />
-                </TouchableOpacity>
+                <View style={styles.recordActions}>
+                  <TouchableOpacity onPress={() => router.push({ pathname: '/(tabs)/cgpa/calculator', params: { recordId: level.id } })} style={styles.actionBtn}>
+                    <Ionicons name="pencil-outline" size={22} color="#001f3f" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteLevel(level.id)} style={styles.actionBtn}>
+                    <Ionicons name="trash-outline" size={22} color="#ff4444" />
+                  </TouchableOpacity>
+                </View>
               </View>
             ))}
           </View>
@@ -164,5 +163,6 @@ const styles = StyleSheet.create({
   recordLevel: { fontSize: 16, fontWeight: 'bold', color: '#001f3f', marginBottom: 4 },
   recordDetails: { fontSize: 13, color: '#666', marginBottom: 2 },
   recordCgpa: { fontSize: 14, fontWeight: '600', color: '#4CAF50' },
-  deleteBtn: { padding: 10 },
+  recordActions: { flexDirection: 'row', alignItems: 'center' },
+  actionBtn: { padding: 8 },
 });

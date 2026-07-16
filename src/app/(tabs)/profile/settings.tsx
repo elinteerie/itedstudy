@@ -13,6 +13,8 @@ export default function SettingsScreen() {
   const { data: userInfo } = useGetUserInfoQuery(token || '', {
     skip: !token,
   });
+  const displayLevel = typeof userInfo?.level === 'object' ? userInfo.level.value : userInfo?.level;
+  const displayDepartment = typeof userInfo?.department === 'object' ? userInfo.department.name : userInfo?.department;
   const menuItems = [
     {
       icon: 'person-outline',
@@ -71,12 +73,12 @@ export default function SettingsScreen() {
 
         <View style={styles.statsRow}>
           <View style={styles.stat}>
-            <Text style={styles.statValue}>{userInfo?.level || user.level || '100'}</Text>
+            <Text style={styles.statValue}>{displayLevel || user.level || '100'}</Text>
             <Text style={styles.statLabel}>LEVEL</Text>
           </View>
           <View style={[styles.stat, { width: "35%" }]}>
             <Text style={[styles.statValue, { flexWrap: 'wrap', textAlign: 'center' }]}>
-              {userInfo?.department || user.department || 'Null'}
+              {displayDepartment || user.department || 'Null'}
             </Text>
             <Text style={styles.statLabel}>DEPARTMENT</Text>
           </View>

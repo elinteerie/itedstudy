@@ -32,8 +32,8 @@ export default function EditProfileScreen() {
         setFullName(userFromState.full_name || '');
       }
       setEmail(userInfo.email || '');
-      setDepartment(userInfo.department || '');
-      setLevel(userInfo.level || '');
+      setDepartment(typeof userInfo.department === 'object' ? userInfo.department.name : (userInfo.department || ''));
+      setLevel(typeof userInfo.level === 'object' ? String(userInfo.level.value) : (userInfo.level || ''));
     } else if (userFromState.full_name) {
       setFullName(userFromState.full_name || '');
       setEmail(userFromState.email || '');

@@ -21,6 +21,7 @@ export default function LoginScreen() {
     //     console.log('Login:', email, password);
     // };
     const handleLogin = async () => {
+        if (isLoading) return;
         if (!email || !password) {
             Toast.show({ type: "error", text1: "Fill in all fields" });
             return;
@@ -48,7 +49,7 @@ export default function LoginScreen() {
     return (
 
         <KeyboardAvoidingView
-            style={{ flex: 1 }}
+            style={{ flex: 1, backgroundColor: '#fff' }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
         >
@@ -96,7 +97,7 @@ export default function LoginScreen() {
 
 
                     <TouchableOpacity
-                        style={styles.button}
+                        style={[styles.button, isLoading && styles.buttonDisabled]}
                         onPress={handleLogin}
                         disabled={isLoading}
                     >
@@ -166,6 +167,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
+    buttonDisabled: { opacity: 0.6 },
     footer: {
         flexDirection: 'row',
         justifyContent: 'center',

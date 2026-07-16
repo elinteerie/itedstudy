@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -18,7 +18,7 @@ const gradePoints: { [key: string]: number } = { A: 5, B: 4, C: 3, D: 2, E: 1, F
 const grades = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 export default function LevelCalculatorScreen() {
-    const { semester: initialSemester } = useLocalSearchParams();
+    const { semester: initialSemester, recordId } = useLocalSearchParams();
     const [semester, setSemester] = useState<'first' | 'second'>((initialSemester as 'first' | 'second') || 'first');
     const [level, setLevel] = useState('100');
     const dispatch = useAppDispatch();
@@ -27,6 +27,19 @@ export default function LevelCalculatorScreen() {
     const [firstSemesterCourses, setFirstSemesterCourses] = useState<Course[]>([...initialCourses]);
     const [secondSemesterCourses, setSecondSemesterCourses] = useState<Course[]>([...initialCourses]);
     const [gpa, setGpa] = useState({ first: '0.00', second: '0.00', cgpa: '0.00' });
+    const [focusedCredit, setFocusedCredit] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!recordId) return;
+        AsyncStorage.getItem('cgpa_records').then(data => {
+            const record = (data ? JSON.parse(data) : []).find((item: any) => item.id === String(recordId));
+            if (!record) return;
+            setLevel(record.level.replace(' Level', ''));
+            setGpa({ first: record.firstGPA, second: record.secondGPA, cgpa: record.cgpa });
+            if (record.firstSemesterCourses) setFirstSemesterCourses(record.firstSemesterCourses);
+            if (record.secondSemesterCourses) setSecondSemesterCourses(record.secondSemesterCourses);
+        });
+    }, [recordId]);
 
     const currentCourses = semester === 'first' ? firstSemesterCourses : secondSemesterCourses;
     const setCourses = semester === 'first' ? setFirstSemesterCourses : setSecondSemesterCourses;
@@ -98,22 +111,26 @@ export default function LevelCalculatorScreen() {
             const records = existing ? JSON.parse(existing) : [];
 
             const newRecord = {
-                id: Date.now().toString(),
+                id: recordId ? String(recordId) : Date.now().toString(),
                 level: `${level} Level`,
                 firstGPA: gpa.first,
                 secondGPA: gpa.second,
                 cgpa: gpa.cgpa,
+                firstSemesterCourses,
+                secondSemesterCourses,
                 createdAt: new Date().toISOString(),
             };
 
-            records.push(newRecord);
+            const existingIndex = records.findIndex((item: any) => item.id === newRecord.id);
+            if (existingIndex >= 0) records[existingIndex] = newRecord;
+            else records.push(newRecord);
             await AsyncStorage.setItem('cgpa_records', JSON.stringify(records));
 
             // Calculate total CGPA and update Redux
             const totalCGPA = records.reduce((sum: number, l: any) => sum + parseFloat(l.cgpa), 0) / records.length;
             dispatch(setUserInfo({ cgpa: totalCGPA.toFixed(2) }));
 
-            Toast.show({ type: 'success', text1: 'Record saved successfully' });
+            Toast.show({ type: 'success', text1: recordId ? 'Record updated successfully' : 'Record saved successfully' });
             router.back();
         } catch (error) {
             Toast.show({ type: 'error', text1: 'Failed to save record' });
@@ -181,15 +198,22 @@ export default function LevelCalculatorScreen() {
                                 placeholder="Course"
                                 placeholderTextColor="#999"
                             />
-                            <TextInput
-                                style={styles.creditInput}
-                                value={course.credit}
-                                onChangeText={(text) => updateCourse(index, 'credit', text.replace(/[^0-9]/g, ''))}
-                                keyboardType="numeric"
-                                placeholder="0"
-                                placeholderTextColor="#999"
-                                maxLength={1}
-                            />
+                            <View style={styles.creditInputWrapper}>
+                                <TextInput
+                                    style={styles.creditInput}
+                                    value={course.credit}
+                                    onChangeText={(text) => updateCourse(index, 'credit', text.replace(/[^0-9]/g, ''))}
+                                    onFocus={() => setFocusedCredit(`${semester}-${index}`)}
+                                    onBlur={() => setFocusedCredit(null)}
+                                    keyboardType="numeric"
+                                    placeholder="0"
+                                    placeholderTextColor="#999"
+                                    maxLength={1}
+                                    textAlign="center"
+                                    caretHidden={course.credit === ''}
+                                />
+                                {focusedCredit === `${semester}-${index}` && course.credit === '' && <View style={styles.centeredCaret} />}
+                            </View>
                             <TouchableOpacity style={styles.gradeButton} onPress={() => cycleGrade(index)}>
                                 <Text style={styles.gradeText}>{course.grade}</Text>
                             </TouchableOpacity>
@@ -201,7 +225,7 @@ export default function LevelCalculatorScreen() {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.saveButton} onPress={saveRecord}>
-                        <Text style={styles.saveText}>Save Record</Text>
+                        <Text style={styles.saveText}>{recordId ? 'Update Record' : 'Save Record'}</Text>
                     </TouchableOpacity>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -232,7 +256,9 @@ const styles = StyleSheet.create({
     headerText: { color: '#fff', fontWeight: 'bold', fontSize: 13, flex: 1, textAlign: 'center' },
     tableRow: { flexDirection: 'row', gap: 6, marginBottom: 8 },
     courseInput: { flex: 2, backgroundColor: '#fff', borderRadius: 8, padding: 12, fontSize: 14, borderWidth: 1, borderColor: '#ddd' },
-    creditInput: { flex: 0.8, backgroundColor: '#fff', borderRadius: 8, padding: 12, fontSize: 14, textAlign: 'center', borderWidth: 1, borderColor: '#ddd' },
+    creditInputWrapper: { flex: 0.8, position: 'relative' },
+    creditInput: { flex: 1, backgroundColor: '#fff', borderRadius: 8, paddingVertical: 12, paddingHorizontal: 0, fontSize: 14, textAlign: 'center', textAlignVertical: 'center', borderWidth: 1, borderColor: '#ddd' },
+    centeredCaret: { position: 'absolute', width: 1.5, height: 18, backgroundColor: '#001f3f', left: '58%', top: '50%', marginTop: -9 },
     gradeButton: { flex: 0.8, backgroundColor: '#4CAF50', borderRadius: 8, alignItems: 'center', justifyContent: 'center', minHeight: 45 },
     gradeText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
     calculateButton: { backgroundColor: '#001f3f', borderRadius: 25, padding: 16, alignItems: 'center', marginTop: 15 },

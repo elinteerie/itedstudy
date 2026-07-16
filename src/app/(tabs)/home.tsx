@@ -38,8 +38,8 @@ useEffect(() => {
     dispatch(setUserInfo({
       full_name: userInfo.full_name,
       email: userInfo.email,
-      level: userInfo.level,
-      department: userInfo.department,
+      level: typeof userInfo.level === 'object' ? String(userInfo.level.value) : userInfo.level,
+      department: typeof userInfo.department === 'object' ? userInfo.department.name : userInfo.department,
       activated: userInfo.active,
    
     }));
@@ -76,6 +76,10 @@ useEffect(() => {
       route: '/aiDocumentAnalyzer'
     },
   ];
+
+  const filteredMenuItems = menuItems.filter((item) =>
+    `${item.title} ${item.subtitle}`.toLowerCase().includes(searchQuery.trim().toLowerCase())
+  );
 
   const cards = [
     {
@@ -122,7 +126,7 @@ useEffect(() => {
           <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search"
+            placeholder="Search features"
             placeholderTextColor="#999"
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -162,7 +166,7 @@ useEffect(() => {
         ))}
 
         <View style={styles.menuGrid}>
-          {menuItems.map((item, index) => {
+          {filteredMenuItems.map((item, index) => {
             const IconComponent = item.Icon;// Extract the SVG component
 
             return (
@@ -179,6 +183,12 @@ useEffect(() => {
               </TouchableOpacity>
             );
           })}
+
+          {searchQuery.trim() && filteredMenuItems.length === 0 && (
+            <Text style={{ textAlign: 'center', color: '#666', paddingVertical: 20 }}>
+              No matching feature found
+            </Text>
+          )}
 
         
         </View>

@@ -52,6 +52,7 @@ export default function SignUpScreen() {
     const availableDepartments = departments.filter((item) => Number(item.university_id) === universityId);
     console.log(universities, availableDepartments, availableLevels)
     const handleSignUp = async () => {
+        if (creating || resending) return;
 
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -105,7 +106,7 @@ export default function SignUpScreen() {
     return (
 
         <KeyboardAvoidingView
-            style={{ flex: 1 }}
+            style={{ flex: 1, backgroundColor: '#fff' }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <View style={styles.container}>
@@ -233,7 +234,7 @@ export default function SignUpScreen() {
 
 
                         <TouchableOpacity
-                            style={styles.button}
+                            style={[styles.button, (creating || resending) && styles.buttonDisabled]}
                             onPress={handleSignUp}
                             disabled={creating || resending || loadingUnis || loadingLevels || loadingDepartments || !institution || !level || !department}
                         >
@@ -327,6 +328,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
+    buttonDisabled: { opacity: 0.6 },
     footer: {
         flexDirection: 'row',
         justifyContent: 'center',

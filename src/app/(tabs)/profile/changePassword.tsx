@@ -21,6 +21,7 @@ export default function ChangePasswordScreen() {
   const [resetPassword, { isLoading: resetting }] = useResetPasswordMutation();
 
   const handleRequestOtp = async () => {
+    if (sendingOtp || resetting) return;
     const emailToUse = email || userEmail;
     
     if (!emailToUse) {
@@ -42,6 +43,7 @@ export default function ChangePasswordScreen() {
   };
 
   const handleUpdate = async () => {
+    if (sendingOtp || resetting) return;
     if (!otp || !newPassword || !confirmPassword) {
       Toast.show({ type: "error", text1: "Please fill all fields" });
       return;
@@ -104,7 +106,7 @@ export default function ChangePasswordScreen() {
           <TouchableOpacity
             style={styles.updateButton}
             onPress={handleRequestOtp}
-            disabled={sendingOtp}
+            disabled={sendingOtp || resetting}
           >
             {sendingOtp ? (
               <ActivityIndicator color="#fff" />
@@ -161,7 +163,7 @@ export default function ChangePasswordScreen() {
             <TouchableOpacity
               style={styles.resendButton}
               onPress={handleRequestOtp}
-              disabled={sendingOtp}
+              disabled={sendingOtp || resetting}
             >
               <Text style={styles.resendText}>
                 {sendingOtp ? "Resending..." : "Resend OTP"}
@@ -171,7 +173,7 @@ export default function ChangePasswordScreen() {
             <TouchableOpacity
               style={styles.updateButton}
               onPress={handleUpdate}
-              disabled={resetting}
+              disabled={sendingOtp || resetting}
             >
               {resetting ? (
                 <ActivityIndicator color="#fff" />
