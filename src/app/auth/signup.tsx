@@ -43,13 +43,14 @@ export default function SignUpScreen() {
     const [resendOtp, { isLoading: resending }] = useResendOtpMutation();
 
     // const { data: universities = [], isLoading: loadingUnis, error } = useListUniversitiesQuery();
-    const { data: universities = [], isLoading: loadingUnis, error } = useListUniversitiesQuery();
-    const { data: levels = [], isLoading: loadingLevels, error: levelsError } = useListLevelsQuery();
-    const { data: departments = [], isLoading: loadingDepartments, error: departmentsError } = useListDepartmentsQuery();
+    const refreshOptions = { refetchOnMountOrArgChange: true };
+    const { data: universities = [], isLoading: loadingUnis, error } = useListUniversitiesQuery(undefined, refreshOptions);
+    const { data: levels = [], isLoading: loadingLevels, error: levelsError } = useListLevelsQuery(undefined, refreshOptions);
+    const { data: departments = [], isLoading: loadingDepartments, error: departmentsError } = useListDepartmentsQuery(undefined, refreshOptions);
     const universityId = Number(institution);
-    const availableLevels = levels.filter((item) => item.university_id === universityId);
-    const availableDepartments = departments.filter((item) => item.university_id === universityId);
-
+    const availableLevels = levels.filter((item) => Number(item.university_id) === universityId);
+    const availableDepartments = departments.filter((item) => Number(item.university_id) === universityId);
+    console.log(universities, availableDepartments, availableLevels)
     const handleSignUp = async () => {
 
         // Email validation
@@ -192,13 +193,15 @@ export default function SignUpScreen() {
                                     style={styles.picker}
                                 >
                                     <Picker.Item label="Select University" value="" />
-                                    {universities.map((uni) => (
+                                    {universities.map((uni) => {
+                                        console.log(universities)
+                                        return (
                                         <Picker.Item
                                             key={uni.id}
                                             label={uni.name}
                                             value={uni.id.toString()}
                                         />
-                                    ))}
+                                    )})}
                                 </Picker>
                             )}
                         </View>

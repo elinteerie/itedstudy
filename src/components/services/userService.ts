@@ -194,17 +194,33 @@ export const userApi = createApi({
         url: `auth/list-uni`,
         method: "POST",
       }),
+
     }),
 
     listLevels: builder.query<Level[], void>({
-      query: () => ({ url: "auth/list-levels", method: "POST" }),
-      transformResponse: (response: ListResponse<Level>) => response.value || [],
+      query: () => ({
+        url: `auth/list-levels`,
+        method: "POST",
+      }),
+      
     }),
 
     listDepartments: builder.query<Department[], void>({
-      query: () => ({ url: "auth/list-depts", method: "POST" }),
-      transformResponse: (response: ListResponse<Department>) => response.value || [],
+      query: () => ({
+        url: `auth/list-depts`,
+        method: "POST",
+      }),
+     
     }),
+    // listLevels: builder.query<Level[], void>({
+    //   query: () => ({ url: "auth/list-levels", method: "POST" }),
+    //   transformResponse: (response: ListResponse<Level>) => response.value || [],
+    // }),
+
+    // listDepartments: builder.query<Department[], void>({
+    //   query: () => ({ url: "auth/list-depts", method: "POST" }),
+    //   transformResponse: (response: ListResponse<Department>) => response.value || [],
+    // }),
 
     createUser: builder.mutation<CreateUserResponse, CreateUserRequestBody>({
       query: (body) => ({
