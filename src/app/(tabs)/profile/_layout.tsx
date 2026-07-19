@@ -8,6 +8,7 @@ export default function ProfileLayout() {
                 contentStyle: { backgroundColor: 'transparent' }
             }}
         >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen
                 name="settings"
                 options={{

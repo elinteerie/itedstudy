@@ -13,8 +13,10 @@ export default function SettingsScreen() {
   const { data: userInfo } = useGetUserInfoQuery(token || '', {
     skip: !token,
   });
-  const displayLevel = typeof userInfo?.level === 'object' ? userInfo.level.value : userInfo?.level;
-  const displayDepartment = typeof userInfo?.department === 'object' ? userInfo.department.name : userInfo?.department;
+  const apiLevel = typeof userInfo?.level === 'object' ? userInfo.level.value : userInfo?.level;
+  const savedLevel = typeof user.level === 'object' ? (user.level as any).value : user.level;
+  const apiDepartment = typeof userInfo?.department === 'object' ? userInfo.department.name : userInfo?.department;
+  const savedDepartment = typeof user.department === 'object' ? (user.department as any).name : user.department;
   const menuItems = [
     {
       icon: 'person-outline',
@@ -73,12 +75,12 @@ export default function SettingsScreen() {
 
         <View style={styles.statsRow}>
           <View style={styles.stat}>
-            <Text style={styles.statValue}>{displayLevel || user.level || '100'}</Text>
+            <Text style={styles.statValue}>{String(apiLevel || savedLevel || '100')}</Text>
             <Text style={styles.statLabel}>LEVEL</Text>
           </View>
           <View style={[styles.stat, { width: "35%" }]}>
             <Text style={[styles.statValue, { flexWrap: 'wrap', textAlign: 'center' }]}>
-              {displayDepartment || user.department || 'Null'}
+              {String(apiDepartment || savedDepartment || 'Null')}
             </Text>
             <Text style={styles.statLabel}>DEPARTMENT</Text>
           </View>

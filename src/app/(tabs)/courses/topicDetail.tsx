@@ -1,41 +1,19 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import React from 'react';
+import { WebView } from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGetTopicContentQuery } from '../../../components/services/userService';
 import { useAppSelector } from '../../../components/redux/store';
-import { MathJaxSvg } from 'react-native-mathjax-html-to-svg';
-import Markdown from 'react-native-markdown-display';
-
-// Add this function before your component
-const renderMixedContent = (content: string) => {
-  // Split by math delimiters ($$...$$ for block, $...$ for inline)
-  const parts = content.split(/(\$\$[\s\S]*?\$\$|\$[^$]+\$)/g);
-
-  return parts.map((part, index) => {
-    if (part.startsWith('$$') && part.endsWith('$$')) {
-      return (
-        <MathJaxSvg key={index} fontSize={14} color="#333" fontCache style={{ marginVertical: 10 }}>
-          {part}
-        </MathJaxSvg>
-      );
-    } else if (part.startsWith('$') && part.endsWith('$')) {
-      return (
-        <MathJaxSvg key={index} fontSize={14} color="#333" fontCache>
-          {part}
-        </MathJaxSvg>
-      );
-    } else if (part.trim()) {
-      return <Markdown key={index} style={markdownStyles}>{part}</Markdown>;
-    }
-    return null;
-  });
-};
 
 const TopicDetail = () => {
   const { topicName, topicId, courseName } = useLocalSearchParams();
   const token = useAppSelector((state) => state.auth.token);
   const { data: topicContent, isLoading, error } = useGetTopicContentQuery({ token: token || '', topic_id: Number(topicId) });
+  const pdfUrl = topicContent?.content?.trim();
+  const viewerUrl = pdfUrl && Platform.OS === 'android'
+    ? `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(pdfUrl)}`
+    : pdfUrl;
 
   return (
     <View style={styles.container}>
@@ -54,7 +32,7 @@ const TopicDetail = () => {
           <Text style={styles.pastQText}>Past Questions</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <View style={styles.viewerContainer}>
         {isLoading ? (
           <ActivityIndicator size="large" color="#001f3f" style={{ marginTop: 50 }} />
         ) : error ? (
@@ -65,14 +43,20 @@ const TopicDetail = () => {
             <Text style={{ color: '#666', marginTop: 15, fontSize: 16 }}>No content available</Text>
           </View>
         ) : (
-          <View style={styles.content}>
-            <Text style={styles.sectionTitle}>{topicContent?.title || topicName}</Text>
-            {renderMixedContent(topicContent?.content || '')}
-
-
+          <View style={styles.pdfContainer}>
+            <View style={styles.pdfHeader}>
+              <Text style={styles.sectionTitle}>{topicContent?.title || topicName}</Text>
+            </View>
+            <WebView
+              source={{ uri: viewerUrl! }}
+              style={styles.webView}
+              originWhitelist={['*']}
+              startInLoadingState
+              renderLoading={() => <ActivityIndicator size="large" color="#001f3f" style={styles.loader} />}
+            />
           </View>
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -83,19 +67,12 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 14, fontWeight: 'bold', marginLeft: 15, flex: 1, marginRight: 18 },
   pastQBtn: { backgroundColor: '#001f3f', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 15 },
   pastQText: { color: '#fff', fontSize: 12, fontWeight: '600' },
-  scrollView: { flex: 1 },
-  content: { backgroundColor: '#fff', margin: 20, padding: 20, borderRadius: 15 },
-  sectionTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 15 },
-  mathContent: { fontSize: 14, color: '#333' },
+  viewerContainer: { flex: 1 },
+  pdfContainer: { flex: 1, backgroundColor: '#fff', margin: 12, borderRadius: 12, overflow: 'hidden' },
+  pdfHeader: { flexDirection: 'row', alignItems: 'center', padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
+  sectionTitle: { flex: 1, fontSize: 16, fontWeight: 'bold' },
+  webView: { flex: 1 },
+  loader: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },
 });
-
-const markdownStyles = {
-  body: { fontSize: 14, lineHeight: 22, color: '#333' },
-  heading1: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
-  heading2: { fontSize: 18, fontWeight: 'bold', marginVertical: 8 },
-  heading3: { fontSize: 16, fontWeight: 'bold', marginVertical: 6 },
-  paragraph: { marginVertical: 4 },
-  hr: { backgroundColor: '#ccc', height: 1, marginVertical: 10 },
-};
 
 export default TopicDetail;
