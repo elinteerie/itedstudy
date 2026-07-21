@@ -98,6 +98,13 @@ export default function SignUpScreen() {
                 params: { email },
             });
         } catch (err: any) {
+            setFullName('');
+            setEmail('');
+            setInstitution('');
+            setLevel('');
+            setDepartment('');
+            setPassword('');
+            setRetypePassword('');
             const msg = err?.data?.message || err?.message || "Registration failed";
             Toast.show({ type: "error", text1: "Error", text2: msg });
         }

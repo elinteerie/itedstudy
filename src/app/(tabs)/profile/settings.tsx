@@ -98,6 +98,8 @@ export default function SettingsScreen() {
               onPress={() => {
                 if (item.title === 'Log out') {
                   setShowLogoutModal(true);
+                } else if (item.title === 'Password Reset') {
+                  router.push({ pathname: '/(tabs)/profile/changePassword', params: { from: 'settings' } });
                 } else {
                   router.push(item.route as any);
                 }

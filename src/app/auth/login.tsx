@@ -38,6 +38,8 @@ export default function LoginScreen() {
             Toast.show({ type: "success", text1: "Logged in successfully" });
             router.push("/(tabs)/home");
         } catch (err: any) {
+            setEmail('');
+            setPassword('');
             Toast.show({
                 type: "error",
                 text1: "Login failed",
@@ -91,7 +93,7 @@ export default function LoginScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity onPress={() => router.push('/(tabs)/profile/changePassword')}>
+                    <TouchableOpacity onPress={() => router.push({ pathname: '/(tabs)/profile/changePassword', params: { from: 'login' } })}>
                         <Text style={styles.forgotPassword}>Forgotten Password?</Text>
                     </TouchableOpacity>
 

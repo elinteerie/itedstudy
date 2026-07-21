@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useResendOtpMutation, useResetPasswordMutation } from "../../../components/services/userService";
-import { useAppSelector } from "../../../components/redux/store";
 import Toast from "react-native-toast-message";
 
 export default function ChangePasswordScreen() {
+  const { from } = useLocalSearchParams<{ from?: string }>();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -16,13 +16,16 @@ export default function ChangePasswordScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
 
-  const userEmail = useAppSelector((state) => state.user.user.email);
   const [resendOtp, { isLoading: sendingOtp }] = useResendOtpMutation();
   const [resetPassword, { isLoading: resetting }] = useResetPasswordMutation();
 
+  const redirectAfterError = () => {
+    router.replace(from === 'settings' ? '/(tabs)/home' : '/auth/login');
+  };
+
   const handleRequestOtp = async () => {
     if (sendingOtp || resetting) return;
-    const emailToUse = email || userEmail;
+    const emailToUse = email.trim();
     
     if (!emailToUse) {
       Toast.show({ type: "error", text1: "Please enter your email" });
@@ -34,11 +37,13 @@ export default function ChangePasswordScreen() {
       setOtpSent(true);
       Toast.show({ type: "success", text1: "OTP sent to your email" });
     } catch (err: any) {
+      setEmail('');
       Toast.show({
         type: "error",
         text1: "Failed to send OTP",
         text2: err?.data?.message || "Please try again",
       });
+      redirectAfterError();
     }
   };
 
@@ -54,7 +59,12 @@ export default function ChangePasswordScreen() {
       return;
     }
 
-    const emailToUse = email || userEmail;
+    const emailToUse = email.trim();
+
+    if (!emailToUse) {
+      Toast.show({ type: "error", text1: "Please enter your email" });
+      return;
+    }
 
     try {
       await resetPassword({
@@ -66,11 +76,17 @@ export default function ChangePasswordScreen() {
       Toast.show({ type: "success", text1: "Password changed successfully" });
       router.push('/auth/login');
     } catch (err: any) {
+      setEmail('');
+      setOtp('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setOtpSent(false);
       Toast.show({
         type: "error",
         text1: "Password reset failed",
         text2: err?.data?.message || "Please try again",
       });
+      redirectAfterError();
     }
   };
 
@@ -89,18 +105,16 @@ export default function ChangePasswordScreen() {
       <Text style={styles.subtitle}>Update your password</Text>
 
       <View style={styles.form}>
-        {!userEmail && (
-          <TextInput
-            style={styles.input}
-            placeholder="Email Address"
-            placeholderTextColor="#999"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            editable={!otpSent}
-          />
-        )}
+        <TextInput
+          style={styles.input}
+          placeholder="Email Address"
+          placeholderTextColor="#999"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          editable={!otpSent}
+        />
 
         {!otpSent ? (
           <TouchableOpacity
