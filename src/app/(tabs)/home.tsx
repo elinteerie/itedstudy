@@ -38,8 +38,8 @@ useEffect(() => {
     dispatch(setUserInfo({
       full_name: userInfo.full_name,
       email: userInfo.email,
-      level: typeof userInfo.level === 'object' ? String(userInfo.level.value) : userInfo.level,
-      department: typeof userInfo.department === 'object' ? userInfo.department.name : userInfo.department,
+      level: userInfo.level && typeof userInfo.level === 'object' ? String(userInfo.level.value) : (userInfo.level || ''),
+      department: userInfo.department && typeof userInfo.department === 'object' ? userInfo.department.name : (userInfo.department || ''),
       activated: userInfo.active,
    
     }));

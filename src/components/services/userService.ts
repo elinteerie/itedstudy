@@ -87,8 +87,8 @@ interface VerifyEmailResponse {
 export interface UpdateUserInfoRequestBody {
   full_name?: string;
   university_id?: number;
-  level?: string;
-  deparment?: string;
+  level?: number;
+  deparment?: number;
 }
 
 interface UpdateUserInfoResponse {

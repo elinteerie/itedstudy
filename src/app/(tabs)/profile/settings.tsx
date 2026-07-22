@@ -13,10 +13,10 @@ export default function SettingsScreen() {
   const { data: userInfo } = useGetUserInfoQuery(token || '', {
     skip: !token,
   });
-  const apiLevel = typeof userInfo?.level === 'object' ? userInfo.level.value : userInfo?.level;
-  const savedLevel = typeof user.level === 'object' ? (user.level as any).value : user.level;
-  const apiDepartment = typeof userInfo?.department === 'object' ? userInfo.department.name : userInfo?.department;
-  const savedDepartment = typeof user.department === 'object' ? (user.department as any).name : user.department;
+  const apiLevel = userInfo?.level && typeof userInfo.level === 'object' ? userInfo.level.value : userInfo?.level;
+  const savedLevel = user.level && typeof user.level === 'object' ? (user.level as any).value : user.level;
+  const apiDepartment = userInfo?.department && typeof userInfo.department === 'object' ? userInfo.department.name : userInfo?.department;
+  const savedDepartment = user.department && typeof user.department === 'object' ? (user.department as any).name : user.department;
   const menuItems = [
     {
       icon: 'person-outline',

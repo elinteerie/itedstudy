@@ -23,6 +23,10 @@ export default function ChangePasswordScreen() {
     router.replace(from === 'settings' ? '/(tabs)/home' : '/auth/login');
   };
 
+  const handleBack = () => {
+    router.replace(from === 'settings' ? '/(tabs)/profile/settings' : '/auth/login');
+  };
+
   const handleRequestOtp = async () => {
     if (sendingOtp || resetting) return;
     const emailToUse = email.trim();
@@ -97,7 +101,7 @@ export default function ChangePasswordScreen() {
     >
       <StatusBar style="dark" />
 
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
 

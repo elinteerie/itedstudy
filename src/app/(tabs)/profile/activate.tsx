@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -7,12 +7,59 @@ import { useActivateAccountMutation } from '../../../components/services/userSer
 import Toast from 'react-native-toast-message';
 import { useAppSelector, useAppDispatch } from '../../../components/redux/store';
 import { setUserInfo } from '../../../components/redux/slices/userSlice';
+import { WebView } from 'react-native-webview';
+
+const PAYSTACK_PUBLIC_KEY = 'pk_live_2459774595b58e1ea21e4195df313bf65ef32db1';
+const PAYMENT_AMOUNT_KOBO = 200000;
 
 export default function ActivateAppScreen() {
     const [activationCode, setActivationCode] = useState('');
+    const [paymentEmail, setPaymentEmail] = useState('');
+    const [paymentVisible, setPaymentVisible] = useState(false);
+    const [paymentReference, setPaymentReference] = useState('');
     const token = useAppSelector((state) => state.auth.token);
     const dispatch = useAppDispatch();
     const [activateAccount, { isLoading }] = useActivateAccountMutation();
+
+    const openPayment = () => {
+        const email = paymentEmail.trim();
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            Toast.show({ type: 'error', text1: 'Enter a valid payment email' });
+            return;
+        }
+        setPaymentVisible(true);
+    };
+
+    const paymentHtml = `<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>
+      <script src="https://js.paystack.co/v1/inline.js"></script><script>
+      function send(data){ window.ReactNativeWebView.postMessage(JSON.stringify(data)); }
+      window.onload=function(){
+        var handler=PaystackPop.setup({
+          key:${JSON.stringify(PAYSTACK_PUBLIC_KEY)},
+          email:${JSON.stringify(paymentEmail.trim())},
+          amount:${PAYMENT_AMOUNT_KOBO},
+          currency:'NGN',
+          ref:'ITED-' + Date.now(),
+          metadata:{custom_fields:[{display_name:'Product',variable_name:'product',value:'UniStudy Activation Pin'}]},
+          callback:function(response){send({type:'success',reference:response.reference});},
+          onClose:function(){send({type:'cancel'});}
+        });
+        handler.openIframe();
+      };
+      </script></body></html>`;
+
+    const handlePaymentMessage = (event: any) => {
+        try {
+            const message = JSON.parse(event.nativeEvent.data);
+            setPaymentVisible(false);
+            if (message.type === 'success') {
+                setPaymentReference(message.reference || '');
+                Toast.show({ type: 'success', text1: 'Payment received', text2: 'Verification is pending' });
+            }
+        } catch {
+            Toast.show({ type: 'error', text1: 'Unable to read payment response' });
+        }
+    };
 
     const handleActivate = async () => {
         console.log('Activation Code:', activationCode);
@@ -62,7 +109,17 @@ export default function ActivateAppScreen() {
 
                     <Text style={styles.pinLabel}>To get your activation pin...</Text>
 
-                    <View style={styles.paymentCard}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Payment Email"
+                        placeholderTextColor="#999"
+                        value={paymentEmail}
+                        onChangeText={setPaymentEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+
+                    <TouchableOpacity style={styles.paymentCard} onPress={openPayment}>
                         <View style={styles.paymentHeader}>
                             <View style={styles.smallRectangle} />
                             <View style={styles.smallRectangle} />
@@ -71,19 +128,37 @@ export default function ActivateAppScreen() {
                         </View>
                         <View style={styles.paymentInfo}>
                             <Text style={styles.paymentTitle}>Pay with Paystack</Text>
-                            <Text style={styles.paymentAmount}>N2500</Text>
+                            <Text style={styles.paymentAmount}>₦2,000</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
+
+                    {!!paymentReference && <Text style={styles.referenceText}>Payment reference: {paymentReference}{'\n'}Awaiting backend verification and activation pin.</Text>}
 
                     <View style={styles.bankDetails}>
                         <Text style={styles.bankTitle}>Pay Through Bank Transfer</Text>
-                        <View style={styles.detailRow}><Text style={styles.detailLabel}>Amount:</Text><Text style={styles.detailValue}>N2500</Text></View>
+                        <View style={styles.detailRow}><Text style={styles.detailLabel}>Amount:</Text><Text style={styles.detailValue}>₦2,000</Text></View>
                         <View style={styles.detailRow}><Text style={styles.detailLabel}>Bank Name:</Text><Text style={styles.detailValue}>Opay</Text></View>
                         <View style={styles.detailRow}><Text style={styles.detailLabel}>Account Number:</Text><Text style={styles.detailValue}>8156604439</Text></View>
                         <View style={styles.detailRow}><Text style={styles.detailLabel}>Account Name:</Text><Text style={styles.detailValue}>Ogbonnaya Daniel Kalu</Text></View>
                     </View>
                 </View>
             </ScrollView>
+
+            <Modal visible={paymentVisible} animationType="slide" onRequestClose={() => setPaymentVisible(false)}>
+                <SafeAreaView style={styles.paymentModal}>
+                    <View style={styles.modalHeader}>
+                        <Text style={styles.modalTitle}>Pay ₦2,000</Text>
+                        <TouchableOpacity onPress={() => setPaymentVisible(false)}><Ionicons name="close" size={28} color="#fff" /></TouchableOpacity>
+                    </View>
+                    <WebView
+                        originWhitelist={['*']}
+                        source={{ html: paymentHtml, baseUrl: 'https://paystack.com' }}
+                        onMessage={handlePaymentMessage}
+                        javaScriptEnabled
+                        domStorageEnabled
+                    />
+                </SafeAreaView>
+            </Modal>
         </View>
     );
 }
@@ -105,6 +180,10 @@ const styles = StyleSheet.create({
     smallRectangle: { height: 7, width: 35, backgroundColor: '#1758FF' },
     paymentTitle: { fontSize: 16, fontWeight: '600' },
     paymentAmount: { fontSize: 20, fontWeight: 'bold' },
+    referenceText: { color: '#1B5E20', fontSize: 12, lineHeight: 18, marginBottom: 20 },
+    paymentModal: { flex: 1, backgroundColor: '#fff' },
+    modalHeader: { backgroundColor: '#001f3f', paddingHorizontal: 20, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    modalTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
     bankDetails: { backgroundColor: '#f5f5f5', borderRadius: 10, padding: 20 },
     bankTitle: { fontSize: 16, fontWeight: '600', marginBottom: 15 },
     detailRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },

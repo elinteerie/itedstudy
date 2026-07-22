@@ -10,12 +10,15 @@ import Toast from "react-native-toast-message";
 import { setUserInfo } from '../../../components/redux/slices/userSlice';
 import { UpdateUserInfoRequestBody, useGetUserInfoQuery } from '../../../components/services/userService';
 import { useEffect } from 'react';
+import { Picker } from '@react-native-picker/picker';
+import { useListUniversitiesQuery, useListLevelsQuery, useListDepartmentsQuery } from '../../../components/services/userService';
 
 export default function EditProfileScreen() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
   const [level, setLevel] = useState('');
+  const [institution, setInstitution] = useState('');
   const [showModal, setShowModal] = useState(false);
 
   const userFromState = useAppSelector((state) => state.user.user);
@@ -23,6 +26,15 @@ export default function EditProfileScreen() {
   const { data: userInfo } = useGetUserInfoQuery(token || '', {
     skip: !token,
   });
+  const { data: universitiesResponse } = useListUniversitiesQuery();
+  const { data: levelsResponse } = useListLevelsQuery();
+  const { data: departmentsResponse } = useListDepartmentsQuery();
+  const universities = Array.isArray(universitiesResponse) ? universitiesResponse : ((universitiesResponse as any)?.value || []);
+  const levels = Array.isArray(levelsResponse) ? levelsResponse : ((levelsResponse as any)?.value || []);
+  const departments = Array.isArray(departmentsResponse) ? departmentsResponse : ((departmentsResponse as any)?.value || []);
+  const universityId = Number(institution);
+  const availableLevels = levels.filter(item => Number(item.university_id) === universityId);
+  const availableDepartments = departments.filter(item => Number(item.university_id) === universityId);
 
   useEffect(() => {
     if (userInfo) {
@@ -32,8 +44,11 @@ export default function EditProfileScreen() {
         setFullName(userFromState.full_name || '');
       }
       setEmail(userInfo.email || '');
-      setDepartment(typeof userInfo.department === 'object' ? userInfo.department.name : (userInfo.department || ''));
-      setLevel(typeof userInfo.level === 'object' ? String(userInfo.level.value) : (userInfo.level || ''));
+      const departmentObject = userInfo.department && typeof userInfo.department === 'object' ? userInfo.department : null;
+      const levelObject = userInfo.level && typeof userInfo.level === 'object' ? userInfo.level : null;
+      setInstitution(String(levelObject?.university_id || departmentObject?.university_id || userFromState.university_id || ''));
+      setDepartment(departmentObject ? String(departmentObject.id) : '');
+      setLevel(levelObject ? String(levelObject.id) : '');
     } else if (userFromState.full_name) {
       setFullName(userFromState.full_name || '');
       setEmail(userFromState.email || '');
@@ -62,9 +77,9 @@ export default function EditProfileScreen() {
       const payload: UpdateUserInfoRequestBody = {};
 
       if (fullName) payload.full_name = fullName;
-      if (level) payload.level = level;
-      if (department) payload.deparment = department;
-      payload.university_id = Number(4);
+      if (level) payload.level = Number(level);
+      if (department) payload.deparment = Number(department);
+      if (institution) payload.university_id = Number(institution);
       console.log(2)
       console.log("Payload for update:", payload);
       const res = await updateUserInfo({ token, body: payload }).unwrap();
@@ -129,21 +144,28 @@ export default function EditProfileScreen() {
             autoCapitalize="none"
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Department"
-            placeholderTextColor="#999"
-            value={department}
-            onChangeText={setDepartment}
-          />
+          <View style={styles.pickerContainer}>
+            <Picker selectedValue={institution} onValueChange={(value) => { setInstitution(String(value)); setLevel(''); setDepartment(''); }}>
+              <Picker.Item label="Select University" value="" />
+              {universities.map(item => <Picker.Item key={item.id} label={item.name} value={String(item.id)} />)}
+            </Picker>
+          </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Level"
-            placeholderTextColor="#999"
-            value={level}
-            onChangeText={setLevel}
-          />
+          <View style={styles.pickerContainer}>
+            <Picker selectedValue={level} onValueChange={(value) => setLevel(String(value))} enabled={!!institution}>
+              <Picker.Item label="Select Level" value="" />
+              {availableLevels.map(item => <Picker.Item key={item.id} label={`${item.value} Level`} value={String(item.id)} />)}
+              {!!institution && availableLevels.length === 0 && <Picker.Item label="No levels available" value="" />}
+            </Picker>
+          </View>
+
+          <View style={styles.pickerContainer}>
+            <Picker selectedValue={department} onValueChange={(value) => setDepartment(String(value))} enabled={!!institution}>
+              <Picker.Item label="Select Department" value="" />
+              {availableDepartments.map(item => <Picker.Item key={item.id} label={item.name} value={String(item.id)} />)}
+              {!!institution && availableDepartments.length === 0 && <Picker.Item label="No departments available" value="" />}
+            </Picker>
+          </View>
 
           <TouchableOpacity
             style={styles.button}
@@ -223,6 +245,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 15,
   },
+  pickerContainer: { backgroundColor: '#f5f5f5', borderRadius: 10, marginBottom: 15, overflow: 'hidden' },
   button: {
     backgroundColor: '#001f3f',
     borderRadius: 30,

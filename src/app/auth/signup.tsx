@@ -44,9 +44,12 @@ export default function SignUpScreen() {
 
     // const { data: universities = [], isLoading: loadingUnis, error } = useListUniversitiesQuery();
     const refreshOptions = { refetchOnMountOrArgChange: true };
-    const { data: universities = [], isLoading: loadingUnis, error } = useListUniversitiesQuery(undefined, refreshOptions);
-    const { data: levels = [], isLoading: loadingLevels, error: levelsError } = useListLevelsQuery(undefined, refreshOptions);
-    const { data: departments = [], isLoading: loadingDepartments, error: departmentsError } = useListDepartmentsQuery(undefined, refreshOptions);
+    const { data: universitiesResponse, isLoading: loadingUnis, error } = useListUniversitiesQuery(undefined, refreshOptions);
+    const { data: levelsResponse, isLoading: loadingLevels, error: levelsError } = useListLevelsQuery(undefined, refreshOptions);
+    const { data: departmentsResponse, isLoading: loadingDepartments, error: departmentsError } = useListDepartmentsQuery(undefined, refreshOptions);
+    const universities = Array.isArray(universitiesResponse) ? universitiesResponse : ((universitiesResponse as any)?.value || []);
+    const levels = Array.isArray(levelsResponse) ? levelsResponse : ((levelsResponse as any)?.value || []);
+    const departments = Array.isArray(departmentsResponse) ? departmentsResponse : ((departmentsResponse as any)?.value || []);
     const universityId = Number(institution);
     const availableLevels = levels.filter((item) => Number(item.university_id) === universityId);
     const availableDepartments = departments.filter((item) => Number(item.university_id) === universityId);
