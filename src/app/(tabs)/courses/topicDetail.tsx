@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Platform, Modal, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Pdf from 'react-native-pdf';
+import * as FileSystem from 'expo-file-system/legacy';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGetTopicContentQuery } from '../../../components/services/userService';
@@ -11,11 +12,31 @@ const TopicDetail = () => {
   const token = useAppSelector((state) => state.auth.token);
   const { data: topicContent, isLoading, error } = useGetTopicContentQuery({ token: token || '', topic_id: Number(topicId) });
   const [pdfVisible, setPdfVisible] = useState(false);
+  const [pdfError, setPdfError] = useState('');
+  const [localPdfUri, setLocalPdfUri] = useState('');
   const pdfUrl = topicContent?.content?.trim();
 
   useEffect(() => {
-    if (pdfUrl) setPdfVisible(true);
-  }, [pdfUrl]);
+    if (!pdfUrl) return;
+
+    let cancelled = false;
+    setPdfError('');
+    setLocalPdfUri('');
+    setPdfVisible(true);
+
+    const downloadPdf = async () => {
+      try {
+        const destination = `${FileSystem.cacheDirectory}topic-${topicId}-${Date.now()}.pdf`;
+        const result = await FileSystem.downloadAsync(pdfUrl, destination);
+        if (!cancelled) setLocalPdfUri(result.uri);
+      } catch {
+        if (!cancelled) setPdfError('Unable to download this PDF. Please try again.');
+      }
+    };
+
+    downloadPdf();
+    return () => { cancelled = true; };
+  }, [pdfUrl, topicId]);
 
   return (
     <View style={styles.container}>
@@ -63,9 +84,10 @@ const TopicDetail = () => {
               <Ionicons name="close" size={26} color="#fff" />
             </TouchableOpacity>
           </View>
-          {!!pdfUrl && (
+          {!localPdfUri && !pdfError && <ActivityIndicator size="large" color="#001f3f" style={styles.loader} />}
+          {!!localPdfUri && !pdfError && (
             <Pdf
-              source={{ uri: pdfUrl, cache: true }}
+              source={{ uri: localPdfUri }}
               style={styles.pdf}
               horizontal={false}
               enablePaging={false}
@@ -73,8 +95,10 @@ const TopicDetail = () => {
               minScale={1}
               maxScale={5}
               fitPolicy={0}
+              onError={() => setPdfError('Unable to load this PDF. Please try again.')}
             />
           )}
+          {!!pdfError && <View style={styles.pdfError}><Ionicons name="alert-circle-outline" size={44} color="#d32f2f" /><Text style={styles.pdfErrorText}>{pdfError}</Text></View>}
         </SafeAreaView>
       </Modal>
     </View>
@@ -97,6 +121,8 @@ const styles = StyleSheet.create({
   modalTitle: { flex: 1, color: '#fff', fontSize: 16, fontWeight: 'bold' },
   closeButton: { padding: 6, marginLeft: 10 },
   pdf: { flex: 1, width: '100%', backgroundColor: '#e8e8e8' },
+  pdfError: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30 },
+  pdfErrorText: { color: '#d32f2f', textAlign: 'center', marginTop: 12 },
   loader: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },
 });
 

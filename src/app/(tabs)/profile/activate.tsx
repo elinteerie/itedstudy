@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import { useAppSelector, useAppDispatch } from '../../../components/redux/store';
 import { setUserInfo } from '../../../components/redux/slices/userSlice';
 import { WebView } from 'react-native-webview';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PAYSTACK_PUBLIC_KEY = 'pk_live_2459774595b58e1ea21e4195df313bf65ef32db1';
 const PAYMENT_AMOUNT_KOBO = 200000;
@@ -54,7 +55,7 @@ export default function ActivateAppScreen() {
             setPaymentVisible(false);
             if (message.type === 'success') {
                 setPaymentReference(message.reference || '');
-                Toast.show({ type: 'success', text1: 'Payment received', text2: 'Verification is pending' });
+                Toast.show({ type: 'success', text1: 'Payment received', text2: 'Your activation pin will be sent by email after verification' });
             }
         } catch {
             Toast.show({ type: 'error', text1: 'Unable to read payment response' });
@@ -108,6 +109,7 @@ export default function ActivateAppScreen() {
                     </TouchableOpacity>
 
                     <Text style={styles.pinLabel}>To get your activation pin...</Text>
+                    <Text style={styles.deliveryText}>Purchase an activation pin for ₦2,000. After payment is verified, the pin will be delivered to the email address below.</Text>
 
                     <TextInput
                         style={styles.input}
@@ -132,7 +134,7 @@ export default function ActivateAppScreen() {
                         </View>
                     </TouchableOpacity>
 
-                    {!!paymentReference && <Text style={styles.referenceText}>Payment reference: {paymentReference}{'\n'}Awaiting backend verification and activation pin.</Text>}
+                    {!!paymentReference && <Text style={styles.referenceText}>Payment reference: {paymentReference}{'\n'}Your activation pin will be delivered to {paymentEmail} after verification.</Text>}
 
                     <View style={styles.bankDetails}>
                         <Text style={styles.bankTitle}>Pay Through Bank Transfer</Text>
@@ -145,7 +147,7 @@ export default function ActivateAppScreen() {
             </ScrollView>
 
             <Modal visible={paymentVisible} animationType="slide" onRequestClose={() => setPaymentVisible(false)}>
-                <SafeAreaView style={styles.paymentModal}>
+                <SafeAreaView style={styles.paymentModal} edges={['top', 'bottom']}>
                     <View style={styles.modalHeader}>
                         <Text style={styles.modalTitle}>Pay ₦2,000</Text>
                         <TouchableOpacity onPress={() => setPaymentVisible(false)}><Ionicons name="close" size={28} color="#fff" /></TouchableOpacity>
@@ -174,6 +176,7 @@ const styles = StyleSheet.create({
     activateButton: { backgroundColor: '#001f3f', borderRadius: 30, padding: 18, alignItems: 'center', marginBottom: 30 },
     activateText: { color: '#fff', fontSize: 16, fontWeight: '600' },
     pinLabel: { fontSize: 14, fontWeight: '600', marginBottom: 15 },
+    deliveryText: { fontSize: 13, color: '#666', lineHeight: 19, marginBottom: 15 },
     paymentCard: { backgroundColor: '#E3F2FD', borderRadius: 10, padding: 20, marginBottom: 20, elevation: 3, flexDirection: 'row', alignItems: 'center' },
     paymentHeader: { width: '30%', justifyContent: 'flex-start', alignItems: 'flex-start', gap: 2 },
     paymentInfo: { flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' },
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
     paymentAmount: { fontSize: 20, fontWeight: 'bold' },
     referenceText: { color: '#1B5E20', fontSize: 12, lineHeight: 18, marginBottom: 20 },
     paymentModal: { flex: 1, backgroundColor: '#fff' },
-    modalHeader: { backgroundColor: '#001f3f', paddingHorizontal: 20, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    modalHeader: { backgroundColor: '#001f3f', marginTop: 8, paddingHorizontal: 20, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
     modalTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
     bankDetails: { backgroundColor: '#f5f5f5', borderRadius: 10, padding: 20 },
     bankTitle: { fontSize: 16, fontWeight: '600', marginBottom: 15 },
